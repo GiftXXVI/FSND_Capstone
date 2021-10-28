@@ -30,5 +30,32 @@ def after_request(response):
     return response
 
 
+@APP.errorhandler(404)
+def error_404():
+    return jsonify({
+        'success': False,
+        'error': 404,
+        'message': 'not found'
+    }), 404
+
+
+@APP.errorhandler(422)
+def error_422():
+    return jsonify({
+        'success': False,
+        'error': 422,
+        'message': 'unprocessable'
+    }), 422
+
+
+@APP.errorhandler(400)
+def error_400():
+    return jsonify({
+        'success': False,
+        'error': 400,
+        'message': 'bad request'
+    }), 400
+
+
 if __name__ == '__main__':
     APP.run(host='0.0.0.0', port=8080, debug=True)
