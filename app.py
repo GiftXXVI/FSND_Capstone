@@ -1,12 +1,15 @@
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate, migrate
 from flask_cors import CORS
-import actors_blueprint
-import movies_blueprint
+from actors_blueprint import actors_blueprint
+from movies_blueprint import movies_blueprint
 import models
-from models import db, setup_db, Movie, Actor, Gender, Casting
+from models import setup_db, Movie, Actor, Gender, Casting, get_db
 
+db = SQLAlchemy()
+migrate = Migrate()
 
 def create_app(test_config=None):
     # create and configure the app
@@ -15,6 +18,7 @@ def create_app(test_config=None):
     app.register_blueprint(movies_blueprint)
     CORS(app)
     setup_db(app)
+    db, migrate = get_db()
     return app
 
 

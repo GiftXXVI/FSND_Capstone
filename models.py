@@ -19,14 +19,17 @@ db_url = f'postgresql://{db_cred}@{db_sock}/{db_name}'
 def setup_db(app, db_path=db_url):
     app.config["SQLALCHEMY_DATABASE_URI"] = db_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    print(db_path)
     db.app = app
     db.init_app(app)
-    migrate.init_app(app)
+    migrate = Migrate(app, db)
 
 
-class CastModel(db.Model):
-    def __init__(self) -> None:
-        super().__init__()
+def get_db():
+    return db, migrate
+
+
+class CastModel():
 
     def insert(self):
         db.session.add(self)
@@ -52,7 +55,7 @@ class CastModel(db.Model):
         db.session.close()
 
 
-class Movie(CastModel):
+class Movie(db.Model, CastModel):
     __tablename__ = 'movie'
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(), nullable=False, unique=True)
@@ -72,7 +75,7 @@ class Movie(CastModel):
         }
 
 
-class Actor(CastModel):
+class Actor(db.Model, CastModel):
     __tablename__ = 'actor'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False)
@@ -103,7 +106,7 @@ class Actor(CastModel):
         }
 
 
-class Gender(CastModel):
+class Gender(db.Model, CastModel):
     __tablename__ = 'gender'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(), nullable=False, unique=True)
@@ -120,7 +123,7 @@ class Gender(CastModel):
         }
 
 
-class Casting(CastModel):
+class Casting(db.Model, CastModel):
     __tablename__ = 'casting'
     id = db.Column(db.Integer, primary_key=True)
     actor_id = db.Column(db.Integer, db.ForeignKey('actor.id'), nullable=False)
