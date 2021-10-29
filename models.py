@@ -19,7 +19,6 @@ db_url = f'postgresql://{db_cred}@{db_sock}/{db_name}'
 def setup_db(app, db_path=db_url):
     app.config["SQLALCHEMY_DATABASE_URI"] = db_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    print(db_path)
     db.app = app
     db.init_app(app)
     migrate = Migrate(app, db)

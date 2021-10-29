@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, migrate
 from flask_cors import CORS
 from actors_blueprint import actors_blueprint
+from genders_blueprint import genders_blueprint
 from movies_blueprint import movies_blueprint
 import models
 from models import setup_db, Movie, Actor, Gender, Casting, get_db
@@ -11,11 +12,13 @@ from models import setup_db, Movie, Actor, Gender, Casting, get_db
 db = SQLAlchemy()
 migrate = Migrate()
 
+
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     app.register_blueprint(actors_blueprint)
     app.register_blueprint(movies_blueprint)
+    app.register_blueprint(genders_blueprint)
     CORS(app)
     setup_db(app)
     db, migrate = get_db()
@@ -35,7 +38,7 @@ def after_request(response):
 
 
 @APP.errorhandler(404)
-def error_404():
+def error_404(error):
     return jsonify({
         'success': False,
         'error': 404,
@@ -44,7 +47,7 @@ def error_404():
 
 
 @APP.errorhandler(422)
-def error_422():
+def error_422(error):
     return jsonify({
         'success': False,
         'error': 422,
@@ -53,7 +56,7 @@ def error_422():
 
 
 @APP.errorhandler(400)
-def error_400():
+def error_400(error):
     return jsonify({
         'success': False,
         'error': 400,

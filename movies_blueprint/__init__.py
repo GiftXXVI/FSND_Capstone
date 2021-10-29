@@ -1,3 +1,4 @@
+from typing import Sequence
 from flask import Blueprint
 from models import db, setup_db, Movie, Actor, Gender, Casting
 from flask import Flask, request, abort, jsonify
@@ -30,6 +31,7 @@ def get_movie(movie_id):
 
 @movies_blueprint.route('/movies', methods=['POST'])
 def create_movie():
+    success = True
     body = request.get_json()
     if body is None:
         abort(400)
@@ -46,13 +48,18 @@ def create_movie():
                 movie.apply()
                 movie.refresh()
                 format_movies = [movie.format()]
-                return jsonify({
-                    'success': True,
-                    'created': movie.id,
-                    'movies': format_movies
-                })
             except:
-                abort(422)
+                movie.rollback()
+            finally:
+                movie.dispose()
+                if success:
+                    return jsonify({
+                        'success': True,
+                        'created': movie.id,
+                        'movies': format_movies
+                    })
+                else:
+                    abort(422)
 
 
 @movies_blueprint.route('/movies/<int:movie_id>', methods=['PATCH'])
