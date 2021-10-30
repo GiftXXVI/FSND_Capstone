@@ -1,7 +1,6 @@
-from typing import Sequence
 from flask import Blueprint
-from models import db, setup_db, Movie, Actor, Gender, Casting
-from flask import Flask, request, abort, jsonify
+from models import Movie
+from flask import request, abort, jsonify
 
 movies_blueprint = Blueprint('movies_blueprint', __name__)
 
@@ -54,7 +53,7 @@ def create_movie():
                 movie.dispose()
                 if success:
                     return jsonify({
-                        'success': True,
+                        'success': success,
                         'created': movie.id,
                         'movies': format_movies
                     })

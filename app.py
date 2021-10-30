@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, abort, jsonify
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, migrate
 from flask_cors import CORS
@@ -62,6 +62,14 @@ def error_400(error):
         'error': 400,
         'message': 'bad request'
     }), 400
+
+@APP.errorhandler(500)
+def error_500(error):
+    return jsonify({
+        'success': False,
+        'error': 500,
+        'message': 'server error'
+    }), 500
 
 
 if __name__ == '__main__':
