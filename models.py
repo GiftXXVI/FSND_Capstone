@@ -149,7 +149,7 @@ class Casting(db.Model, CastModel):
         return{
             'id': self.id,
             'actor': self.actor.name,
-            'movie': self.movie.name,
+            'movie': self.movie.title,
             'casting_date': self.casting_date,
-            'recast_yn': self.recast_yn
+            'recast_yn': self.recast()
         }

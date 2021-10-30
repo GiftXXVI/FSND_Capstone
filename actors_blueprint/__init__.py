@@ -59,3 +59,66 @@ def create_actor():
                         'created': actor.id,
                         'actors': format_actors
                     })
+
+
+@actors_blueprint.route('/actors/<int:actor_id>', methods=['PATCH'])
+def modify_actor(actor_id):
+    success = True
+    body = request.get_json()
+    if body is None:
+        abort(400)
+    else:
+        name = body.get('name', None)
+        dob = body.get('dob', None)
+        gender_id = body.get('gender_id', None)
+        check = name is None or dob is None or gender_id is None
+        if check:
+            abort(400)
+        else:
+            actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
+            if actor is None:
+                abort(422)
+            else:
+                try:
+                    actor.name = name
+                    actor.dob = dob
+                    actor.gender_id = gender_id
+                    actor.apply()
+                    format_actors = [actor.format()]
+                except:
+                    actor.rollback()
+                    success = False
+                finally:
+                    actor.dispose()
+                    if success:
+                        return jsonify({
+                            "success": success,
+                            "modified": actor_id,
+                            "actors": format_actors
+                        })
+
+
+@actors_blueprint.route('/actors/<int:actor_id>',methods=['DELETE'])
+def delete_actor(actor_id):
+    success = True
+    if actor_id is None:
+        abort(400)
+    else:
+        actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
+        if actor is None:
+            abort(422)
+        else:
+            try:
+                actor.delete()
+                actor.apply()
+            except:
+                actor.rollback()
+                success = False
+            finally:
+                actor.dispose()
+                if success:
+                    return jsonify({
+                        "success": success,
+                        "deleted": actor_id,
+                        "actors": []
+                    })

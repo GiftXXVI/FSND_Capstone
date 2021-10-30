@@ -4,6 +4,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, migrate
 from flask_cors import CORS
 from actors_blueprint import actors_blueprint
+from castings_blueprint import castings_blueprint
 from genders_blueprint import genders_blueprint
 from movies_blueprint import movies_blueprint
 import models
@@ -19,6 +20,7 @@ def create_app(test_config=None):
     app.register_blueprint(actors_blueprint)
     app.register_blueprint(movies_blueprint)
     app.register_blueprint(genders_blueprint)
+    app.register_blueprint(castings_blueprint)
     CORS(app)
     setup_db(app)
     db, migrate = get_db()
@@ -44,6 +46,14 @@ def error_404(error):
         'error': 404,
         'message': 'not found'
     }), 404
+
+@APP.errorhandler(405)
+def error_405(error):
+    return jsonify({
+        'success': False,
+        'error': 405,
+        'message': 'not found'
+    }), 405
 
 
 @APP.errorhandler(422)
