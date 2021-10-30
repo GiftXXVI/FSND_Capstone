@@ -92,7 +92,7 @@ class Actor(db.Model, CastModel):
     def age(self):
         now = datetime.now()
         today = now.date()
-        age = relativedelta(self.dob, today).years
+        age = relativedelta(today, self.dob).years
         return age
 
     def format(self):
@@ -101,7 +101,7 @@ class Actor(db.Model, CastModel):
             'name': self.name,
             'dob': self.dob,
             'age': self.age(),
-            'gender': self.gender_id
+            'gender': self.gender.name
         }
 
 
