@@ -1,4 +1,5 @@
-import os
+import auth
+from auth import AuthError
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate, migrate
@@ -7,8 +8,7 @@ from actors_blueprint import actors_blueprint
 from castings_blueprint import castings_blueprint
 from genders_blueprint import genders_blueprint
 from movies_blueprint import movies_blueprint
-import models
-from models import setup_db, Movie, Actor, Gender, Casting, get_db
+from models import setup_db, get_db
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -81,6 +81,14 @@ def error_500(error):
         'message': 'server error'
     }), 500
 
+@APP.errorhandler(AuthError)
+def auth_error(error):
+    error_data = error.format()
+    return jsonify({
+        'success': False,
+        'error': error_data['code'],
+        'message': error_data['message']
+    }), error_data['code']
 
 if __name__ == '__main__':
     APP.run(host='0.0.0.0', port=8080, debug=True)

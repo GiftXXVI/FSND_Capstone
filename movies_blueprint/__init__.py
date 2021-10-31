@@ -1,11 +1,13 @@
 from flask import Blueprint
 from models import Movie
 from flask import request, abort, jsonify
+from auth import requires_auth
 
 movies_blueprint = Blueprint('movies_blueprint', __name__)
 
 
 @movies_blueprint.route('/movies', methods=['GET'])
+@requires_auth(permission='get:movies')
 def get_movies():
     movies = Movie.query.all()
     format_movies = [movie.format() for movie in movies]
@@ -16,6 +18,7 @@ def get_movies():
 
 
 @movies_blueprint.route('/movies/<int:movie_id>', methods=['GET'])
+@requires_auth(permission='get:movies')
 def get_movie(movie_id):
     movie = Movie.query.filter(Movie.id == movie_id).one_or_none()
     if movie is None:
@@ -29,6 +32,7 @@ def get_movie(movie_id):
 
 
 @movies_blueprint.route('/movies', methods=['POST'])
+@requires_auth(permission='post:movies')
 def create_movie():
     success = True
     body = request.get_json()
@@ -62,6 +66,7 @@ def create_movie():
 
 
 @movies_blueprint.route('/movies/<int:movie_id>', methods=['PATCH'])
+@requires_auth(permission='patch:movies')
 def modify_movie(movie_id):
     success = True
     body = request.get_json()
@@ -100,6 +105,7 @@ def modify_movie(movie_id):
 
 
 @movies_blueprint.route('/movies/<int:movie_id>', methods=['DELETE'])
+@requires_auth(permission='delete:movies')
 def delete_movie(movie_id):
     success = True
     if movie_id is None:

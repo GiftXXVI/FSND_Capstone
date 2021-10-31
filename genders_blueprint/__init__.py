@@ -1,11 +1,13 @@
 from flask import Blueprint
 from models import Gender
 from flask import request, abort, jsonify
+from auth import requires_auth
 
 genders_blueprint = Blueprint('genders_blueprint', __name__)
 
 
 @genders_blueprint.route('/genders', methods=['GET'])
+@requires_auth(permission='get:genders')
 def get_genders():
     genders = Gender.query.all()
     format_genders = [gender.format() for gender in genders]
@@ -16,6 +18,7 @@ def get_genders():
 
 
 @genders_blueprint.route('/genders/<int:gender_id>', methods=['GET'])
+@requires_auth(permission='get:genders')
 def get_gender(gender_id):
     gender = Gender.query.filter(Gender.id == gender_id).one_or_none()
     if gender is None:
@@ -29,6 +32,7 @@ def get_gender(gender_id):
 
 
 @genders_blueprint.route('/genders', methods=['POST'])
+@requires_auth(permission='post:genders')
 def create_gender():
     success = True
     body = request.get_json()
@@ -58,6 +62,7 @@ def create_gender():
 
 
 @genders_blueprint.route('/genders/<int:gender_id>', methods=['PATCH'])
+@requires_auth(permission='patch:genders')
 def modify_gender(gender_id):
     success = True
     body = request.get_json()
@@ -92,6 +97,7 @@ def modify_gender(gender_id):
 
 
 @genders_blueprint.route('/genders/<int:gender_id>', methods=['DELETE'])
+@requires_auth(permission='delete:genders')
 def delete_gender(gender_id):
     success = True
     if gender_id is None:

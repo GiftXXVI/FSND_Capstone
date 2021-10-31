@@ -1,11 +1,13 @@
 from flask import Blueprint
 from models import Casting
 from flask import request, abort, jsonify
+from auth import requires_auth
 
 castings_blueprint = Blueprint('castings_blueprint', __name__)
 
 
 @castings_blueprint.route('/castings', methods=['GET'])
+@requires_auth(permission='get:castings')
 def get_castings():
     castings = Casting.query.all()
     format_castings = [casting.format() for casting in castings]
@@ -16,6 +18,7 @@ def get_castings():
 
 
 @castings_blueprint.route('/castings/<int:casting_id>', methods=['GET'])
+@requires_auth(permission='get:castings')
 def get_casting(casting_id):
     casting = Casting.query.filter(Casting.id == casting_id).one_or_none()
     if casting is None:
@@ -29,6 +32,7 @@ def get_casting(casting_id):
 
 
 @castings_blueprint.route('/castings', methods=['POST'])
+@requires_auth(permission='post:castings')
 def create_casting():
     success = True
     body = request.get_json()
@@ -66,6 +70,7 @@ def create_casting():
 
 
 @castings_blueprint.route('/castings/<int:casting_id>', methods=['PATCH'])
+@requires_auth(permission='patch:castings')
 def modify(casting_id):
     success = True
     format_castings = []
@@ -109,6 +114,7 @@ def modify(casting_id):
 
 
 @castings_blueprint.route('/castings/<int:casting_id>', methods=['DELETE'])
+@requires_auth(permission='delete:castings')
 def delete_casting(casting_id):
     success = True
     casting = Casting.query.filter(Casting.id == casting_id).one_or_none()

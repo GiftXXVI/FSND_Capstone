@@ -1,11 +1,13 @@
 from flask import Blueprint
 from models import Actor
 from flask import request, abort, jsonify
+from auth import requires_auth
 
 actors_blueprint = Blueprint('actors_blueprint', __name__)
 
 
 @actors_blueprint.route('/actors', methods=['GET'])
+@requires_auth(permission='get:actors')
 def get_actors():
     actors = Actor.query.all()
     format_actors = [actor.format() for actor in actors]
@@ -16,6 +18,7 @@ def get_actors():
 
 
 @actors_blueprint.route('/actors/<int:actor_id>', methods=['GET'])
+@requires_auth(permission='get:actors')
 def get_actor(actor_id):
     actor = Actor.query.filter(Actor.id == actor_id).one_or_none()
     if actor is None:
@@ -29,6 +32,7 @@ def get_actor(actor_id):
 
 
 @actors_blueprint.route('/actors', methods=['POST'])
+@requires_auth(permission='post:actors')
 def create_actor():
     success = True
     body = request.get_json()
@@ -62,6 +66,7 @@ def create_actor():
 
 
 @actors_blueprint.route('/actors/<int:actor_id>', methods=['PATCH'])
+@requires_auth(permission='patch:actors')
 def modify_actor(actor_id):
     success = True
     body = request.get_json()
@@ -99,6 +104,7 @@ def modify_actor(actor_id):
 
 
 @actors_blueprint.route('/actors/<int:actor_id>',methods=['DELETE'])
+@requires_auth(permission='delete:actors')
 def delete_actor(actor_id):
     success = True
     if actor_id is None:
