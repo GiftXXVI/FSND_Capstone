@@ -1,4 +1,3 @@
-import auth
 from auth import AuthError
 from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
@@ -47,12 +46,13 @@ def error_404(error):
         'message': 'not found'
     }), 404
 
+
 @APP.errorhandler(405)
 def error_405(error):
     return jsonify({
         'success': False,
         'error': 405,
-        'message': 'not found'
+        'message': 'not allowed'
     }), 405
 
 
@@ -73,6 +73,7 @@ def error_400(error):
         'message': 'bad request'
     }), 400
 
+
 @APP.errorhandler(500)
 def error_500(error):
     return jsonify({
@@ -80,6 +81,7 @@ def error_500(error):
         'error': 500,
         'message': 'server error'
     }), 500
+
 
 @APP.errorhandler(AuthError)
 def auth_error(error):
@@ -89,6 +91,7 @@ def auth_error(error):
         'error': error_data['code'],
         'message': error_data['message']
     }), error_data['code']
+
 
 if __name__ == '__main__':
     APP.run(host='0.0.0.0', port=8080, debug=True)
