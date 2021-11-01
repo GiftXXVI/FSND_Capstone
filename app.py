@@ -40,26 +40,29 @@ def after_request(response):
 
 @APP.errorhandler(404)
 def error_404(error):
-    message = error.description if len(error.description)>0 else 'not found'
+    message = error.description if len(error.description) > 0 else 'not found'
     return jsonify({
         'success': False,
         'error': 404,
-        'message': 'not found'
+        'message': message
     }), 404
+
 
 @APP.errorhandler(401)
 def error_401(error):
-    message = error.description if len(error.description)>0 else 'unauthorized'
+    message = error.description if len(
+        error.description) > 0 else 'unauthorized'
     return jsonify({
         'success': False,
         'error': 401,
-        'message': error.description
+        'message': message
     }), 401
 
 
 @APP.errorhandler(405)
 def error_405(error):
-    message = error.description if len(error.description)>0 else 'not allowed'
+    message = error.description if len(
+        error.description) > 0 else 'not allowed'
     return jsonify({
         'success': False,
         'error': 405,
@@ -69,7 +72,8 @@ def error_405(error):
 
 @APP.errorhandler(422)
 def error_422(error):
-    message = error.description if len(error.description)>0 else 'unprocessable'
+    message = error.description if len(
+        error.description) > 0 else 'unprocessable'
     return jsonify({
         'success': False,
         'error': 422,
@@ -79,7 +83,8 @@ def error_422(error):
 
 @APP.errorhandler(400)
 def error_400(error):
-    message = error.description if len(error.description)>0 else 'bad request'
+    message = error.description if len(
+        error.description) > 0 else 'bad request'
     return jsonify({
         'success': False,
         'error': 400,
@@ -89,7 +94,8 @@ def error_400(error):
 
 @APP.errorhandler(500)
 def error_500(error):
-    message = error.description if len(error.description)>0 else 'server error'
+    message = error.description if len(
+        error.description) > 0 else 'server error'
     return jsonify({
         'success': False,
         'error': 500,

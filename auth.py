@@ -26,27 +26,27 @@ class AuthError(Exception):
 def get_token_auth_header():
     auth = request.headers.get('Authorization', None)
     if auth is None:
-        abort(401,'Authorization header is expected.')
+        abort(401, 'Authorization header is expected.')
     else:
         parts = auth.split()
         if 'None' in parts:
-            abort(401,'Token not found.')
+            abort(401, 'Token not found.')
         else:
             if parts[0].lower() != 'bearer':
-                abort(401,'Authorization header must start with "Bearer".')
+                abort(401, 'Authorization header must start with "Bearer".')
             elif len(parts) == 1:
                 abort(401, 'Token not found.')
             elif len(parts) > 2:
-                abort(401,'Authorization header must be bearer token.')
+                abort(401, 'Authorization header must be bearer token.')
             token = parts[1]
             return token
 
 
 def check_permissions(permission, payload):
     if 'permissions' not in payload:
-        abort(401,'Permissions not included in JWT.')
+        abort(401, 'Permissions not included in JWT.')
     if permission not in payload['permissions']:
-        abort(401,'Permission not found.')
+        abort(401, 'Permission not found.')
     return True
 
 
@@ -80,7 +80,7 @@ def verify_decode_jwt(token):
             except jwt.ExpiredSignatureError:
                 abort(401, 'Token expired.')
             except jwt.JWTClaimsError:
-                abort(401,'Incorrect claims. Please, check the audience and issuer.')
+                abort(401, 'Incorrect claims. Please, check the audience and issuer.')
             except Exception:
                 abort(400, 'Unable to parse authentication token.')
         else:

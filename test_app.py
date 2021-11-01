@@ -3,9 +3,11 @@ from dotenv import dotenv_values
 import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import query
 from werkzeug.datastructures import Headers
 from app import create_app
 from random import choice
+import auth
 from auth import AuthError, get_token_auth_header
 from models import setup_db, Gender, Casting, Actor, Movie
 
@@ -29,18 +31,15 @@ class CapstoneTestCase(unittest.TestCase):
         pass
 
     def test_get_movies(self):
-
+        print('*token*')
         token = config['TOKEN'] if len(config['TOKEN']) > 0 else None
+        movies = Movie.query.count()
         response = self.client().get(
             '/movies', headers={"Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
 
-        movies = Movie.query.count()
         if token is None:
-            self.assertRaises(AuthError, get_token_auth_header())
-            #test response code
             self.assertEqual(response.status_code, 401)
-            #test response body
             self.assertEqual(data['success'], False)
         else:
             if movies > 0:
