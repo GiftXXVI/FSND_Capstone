@@ -40,6 +40,7 @@ def after_request(response):
 
 @APP.errorhandler(404)
 def error_404(error):
+    message = error.description if len(error.description)>0 else 'not found'
     return jsonify({
         'success': False,
         'error': 404,
@@ -48,46 +49,51 @@ def error_404(error):
 
 @APP.errorhandler(401)
 def error_401(error):
+    message = error.description if len(error.description)>0 else 'unauthorized'
     return jsonify({
         'success': False,
         'error': 401,
-        'message': 'unauthorized'
+        'message': error.description
     }), 401
 
 
 @APP.errorhandler(405)
 def error_405(error):
+    message = error.description if len(error.description)>0 else 'not allowed'
     return jsonify({
         'success': False,
         'error': 405,
-        'message': 'not allowed'
+        'message': message
     }), 405
 
 
 @APP.errorhandler(422)
 def error_422(error):
+    message = error.description if len(error.description)>0 else 'unprocessable'
     return jsonify({
         'success': False,
         'error': 422,
-        'message': 'unprocessable'
+        'message': message
     }), 422
 
 
 @APP.errorhandler(400)
 def error_400(error):
+    message = error.description if len(error.description)>0 else 'bad request'
     return jsonify({
         'success': False,
         'error': 400,
-        'message': 'bad request'
+        'message': message
     }), 400
 
 
 @APP.errorhandler(500)
 def error_500(error):
+    message = error.description if len(error.description)>0 else 'server error'
     return jsonify({
         'success': False,
         'error': 500,
-        'message': 'server error'
+        'message': message
     }), 500
 
 
