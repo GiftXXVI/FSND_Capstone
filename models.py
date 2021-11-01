@@ -3,6 +3,9 @@ from flask_migrate import Migrate
 from datetime import datetime
 from dateutil.relativedelta import relativedelta
 import os
+from dotenv import load_dotenv
+load_dotenv() 
+
 db = SQLAlchemy()
 migrate = Migrate()
 

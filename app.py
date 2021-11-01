@@ -44,7 +44,7 @@ def error_404(error):
     return jsonify({
         'success': False,
         'error': 404,
-        'message': message
+        'message': message.lower()
     }), 404
 
 
@@ -55,7 +55,7 @@ def error_401(error):
     return jsonify({
         'success': False,
         'error': 401,
-        'message': message
+        'message': message.lower()
     }), 401
 
 
@@ -66,7 +66,7 @@ def error_405(error):
     return jsonify({
         'success': False,
         'error': 405,
-        'message': message
+        'message': message.lower()
     }), 405
 
 
@@ -77,7 +77,7 @@ def error_422(error):
     return jsonify({
         'success': False,
         'error': 422,
-        'message': message
+        'message': message.lower()
     }), 422
 
 
@@ -88,7 +88,7 @@ def error_400(error):
     return jsonify({
         'success': False,
         'error': 400,
-        'message': message
+        'message': message.lower()
     }), 400
 
 
@@ -99,7 +99,7 @@ def error_500(error):
     return jsonify({
         'success': False,
         'error': 500,
-        'message': message
+        'message': message.lower()
     }), 500
 
 

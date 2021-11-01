@@ -3,46 +3,43 @@ from dotenv import dotenv_values
 import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import query
-from werkzeug.datastructures import Headers
-from app import create_app
+from app import APP
 from random import choice
-import auth
-from auth import AuthError, get_token_auth_header
 from models import setup_db, Gender, Casting, Actor, Movie
 
-config = {
-    **dotenv_values(".env"),
-    **os.environ
-}
+from dotenv import load_dotenv
+load_dotenv() 
 
 
 class CapstoneTestCase(unittest.TestCase):
     def setUp(self):
-        self.app = create_app()
+        self.app = APP
         self.client = self.app.test_client
         setup_db(self.app)
 
         with self.app.app_context():
             self.db = SQLAlchemy()
+            self.db.app = self.app
             self.db.init_app(self.app)
 
     def tearDown(self):
         pass
 
     def test_get_movies(self):
-        print('*token*')
-        token = config['TOKEN'] if len(config['TOKEN']) > 0 else None
         movies = Movie.query.count()
+        token = os.getenv('TOKEN') if len(os.getenv('TOKEN')) > 0 else None
         response = self.client().get(
             '/movies', headers={"Authorization": f"Bearer {token}"})
+        print(response.data)
         data = json.loads(response.data)
 
         if token is None:
             self.assertEqual(response.status_code, 401)
             self.assertEqual(data['success'], False)
+            self.assertEqual(data['message'], 'token not found.')
+            self.assertNotIn('movies', data.keys())
         else:
-            if movies > 0:
+            if len(movies) > 0:
                 # test response code
                 self.assertEqual(response.status_code, 200)
 
