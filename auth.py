@@ -6,7 +6,7 @@ from flask import request
 from urllib.request import urlopen
 
 AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
-API_AUDIENCE = os.getnev("API_AUDIENCE")
+API_AUDIENCE = os.getenv("API_AUDIENCE")
 AUTH0_CLIENTID = os.getenv("AUTH0_CLIENTID")
 ALGORITHMS = ["RS256"]
 
@@ -29,15 +29,19 @@ def get_token_auth_header():
         raise AuthError('Authorization header is expected.', 401)
     else:
         parts = auth.split()
-        if parts[0].lower() != 'bearer':
-            raise AuthError(
-                'Authorization header must start with "Bearer".', 401)
-        elif len(parts) == 1:
+        if 'None' in parts:
             raise AuthError('Token not found.', 401)
-        elif len(parts) > 2:
-            raise AuthError('Authorization header must be bearer token.', 401)
-        token = parts[1]
-        return token
+        else:
+            if parts[0].lower() != 'bearer':
+                raise AuthError(
+                    'Authorization header must start with "Bearer".', 401)
+            elif len(parts) == 1:
+                raise AuthError('Token not found.', 401)
+            elif len(parts) > 2:
+                raise AuthError(
+                    'Authorization header must be bearer token.', 401)
+            token = parts[1]
+            return token
 
 
 def check_permissions(permission, payload):
@@ -49,7 +53,6 @@ def check_permissions(permission, payload):
 
 
 def verify_decode_jwt(token):
-    print(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
     jsonurl = urlopen(f'https://{AUTH0_DOMAIN}/.well-known/jwks.json')
 
     jwks = json.loads(jsonurl.read())
@@ -87,11 +90,12 @@ def verify_decode_jwt(token):
         else:
             raise AuthError('Unable to find the appropriate key.', 403)
 
+
 def requires_auth(permission=''):
     def requires_auth_decorator(f):
         @wraps(f)
         def wrapper(*args, **kwargs):
-            print('*Permission* ',permission)
+            print('*Permission* ', permission)
             token = get_token_auth_header()
             payload = verify_decode_jwt(token)
             check_permissions(permission, payload)

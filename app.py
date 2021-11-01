@@ -46,6 +46,14 @@ def error_404(error):
         'message': 'not found'
     }), 404
 
+@APP.errorhandler(401)
+def error_401(error):
+    return jsonify({
+        'success': False,
+        'error': 401,
+        'message': 'unauthorized'
+    }), 401
+
 
 @APP.errorhandler(405)
 def error_405(error):
