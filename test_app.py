@@ -20,8 +20,10 @@ class CapstoneTestCase(unittest.TestCase):
         
         self.get_movie_id = 1
         self.token = os.getenv('TOKEN') if len(os.getenv('TOKEN')) > 0 else None 
-        self.post_movie = {"title":"", "release_date":""}
-
+        self.post_movie = {"title":"Blade Runner 2049", "release_date":"2017-10-03T00:00:00.511Z"}
+        self.post_invalid_date_movie = {"title":"Blade Runner 2049", "release_date":"2017-02-31T00:00:00.511Z"}
+        self.post_invalid_movie = {"title":""}
+        
     def tearDown(self):
         pass
 
