@@ -82,7 +82,7 @@ def verify_decode_jwt(token):
             except jwt.JWTClaimsError:
                 abort(401, 'Incorrect claims. Please, check the audience and issuer.')
             except Exception:
-                abort(400, 'Unable to parse authentication token.')
+                abort(401, 'Unable to parse authentication token.')
         else:
             abort(403, 'Unable to find the appropriate key.')
 

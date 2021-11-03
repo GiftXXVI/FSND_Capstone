@@ -17,12 +17,16 @@ class CapstoneTestCase(unittest.TestCase):
             self.db = SQLAlchemy()
             self.db.app = self.app
             self.db.init_app(self.app)
+        
+        self.get_movie_id = 1
+        self.token = os.getenv('TOKEN') if len(os.getenv('TOKEN')) > 0 else None 
+        self.post_movie = {"title":"", "release_date":""}
 
     def tearDown(self):
         pass
 
     def test_get_movies(self):
-        token = os.getenv('TOKEN') if len(os.getenv('TOKEN')) > 0 else None
+        token = self.token
         response = self.client().get(
             '/movies', headers={"Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
@@ -41,10 +45,10 @@ class CapstoneTestCase(unittest.TestCase):
             self.assertIn('movies', data.keys())
 
     def test_get_movie(self):
-        movie = Movie.query.filter(Movie.id == 1).one_or_none()
-        token = os.getenv('TOKEN') if len(os.getenv('TOKEN')) > 0 else None
+        movie = Movie.query.filter(Movie.id == self.get_movie_id).one_or_none()
+        token = self.token
         response = self.client().get(
-            '/movies/1', headers={"Authorization": f"Bearer {token}"})
+            f'/movies/{self.get_movie_id}', headers={"Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -61,6 +65,20 @@ class CapstoneTestCase(unittest.TestCase):
                 self.assertIn('movies', data.keys())
                 self.assertEqual(data['success'], True)                
 
+    def test_post_movie(self):
+        token = self.token
+        movie = self.post_movie
+        response = self.client.post('/movies', json=movie)
+        data = json.loads(response.data)
+        if token is None:
+            self.assertEqual(response.status_code, 401)
+            self.assertEqual(data['success'], False)
+            self.assertEqual(data['message'], 'token not found.')
+            self.assertNotIn('movies', data.keys())
+        else:
+            self.assertEqual(response.status_code, 200)
+            self.assertIn('movies', data.keys())
+            self.assertEqual(data['success'], True)         
 
 if __name__ == "__main__":
     unittest.main()
