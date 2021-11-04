@@ -1,5 +1,4 @@
 import os
-from dotenv import dotenv_values
 import unittest
 import json
 from flask_sqlalchemy import SQLAlchemy
@@ -86,7 +85,8 @@ class CapstoneTestCase(unittest.TestCase):
     def test_post_movie(self):
         token = self.token
         movie = self.post_movie
-        response = self.client().post('/movies', json=movie)
+        response = self.client().post(
+            '/movies', headers={"Authorization": f"Bearer {token}"}, json=movie)
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -107,7 +107,8 @@ class CapstoneTestCase(unittest.TestCase):
         movie = generate_movie()
         movie.title = 'Terminator 3: Rise of the Machines'
         movie.release_date = '2003-06-30T00:00:00.511Z'
-        response = self.client().patch(f'/movies/{movie.id}', json=movie.format())
+        response = self.client().patch(
+            f'/movies/{movie.id}', headers={"Authorization": f"Bearer {token}"}, json=movie.format())
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -126,7 +127,8 @@ class CapstoneTestCase(unittest.TestCase):
     def test_delete_movie(self):
         token = self.token
         movie = generate_movie()
-        response = self.client().delete(f'/movies/{movie.id}')
+        response = self.client().delete(
+            f'/movies/{movie.id}', headers={"Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -141,6 +143,7 @@ class CapstoneTestCase(unittest.TestCase):
             else:
                 self.assertNotIn('movies', data.keys())
                 self.assertEqual(data['success'], False)
+
 
 if __name__ == "__main__":
     unittest.main()
