@@ -8,10 +8,10 @@ from auth import verify_decode_jwt
 from models import setup_db, Gender, Casting, Actor, Movie
 from jose import jwt
 from urllib.request import urlopen
-from test_utilities import generate_movie, prepare_movies
+from test_utilities import decode_jwt, generate_movie, prepare_genders, prepare_movies
 
 
-class TestMovie(unittest.TestCase):
+class TestMovies(unittest.TestCase):
     def setUp(self):
         self.app = APP
         self.client = self.app.test_client
@@ -23,10 +23,11 @@ class TestMovie(unittest.TestCase):
             self.db.init_app(self.app)
 
         # prepare the table, clear records, create seed record
-        prepare_movies()
-        self.get_movie_id = 1
+        self.setup_success, self.seed_id = prepare_movies()
         self.token = os.getenv('TOKEN') if len(
             os.getenv('TOKEN')) > 0 else None
+        self.token_detail = decode_jwt(self.token)
+        print(self.token_detail)
         self.post_movie = {"title": "Blade Runner 2049",
                            "release_date": "2017-10-03T00:00:00.511Z"}
         self.post_invalid_date_movie = {
@@ -55,12 +56,13 @@ class TestMovie(unittest.TestCase):
                 # test response body
                 self.assertEqual(data['success'], True)
                 self.assertIn('movies', data.keys())
+                self.assertGreaterEqual(len(data['movies']),1)
             else:
                 self.assertEqual(data['success'], False)
                 self.assertNotIn('movies', data.keys())
 
     def test_get_movie(self):
-        movie = Movie.query.filter(Movie.id == self.get_movie_id).one_or_none()
+        movie = Movie.query.filter(Movie.id == self.seed_id).one_or_none()
         token = self.token
         response = self.client().get(
             f'/movies/{self.get_movie_id}', headers={"Authorization": f"Bearer {token}"})
@@ -80,6 +82,7 @@ class TestMovie(unittest.TestCase):
                 if response.status_code == 200:
                     self.assertIn('movies', data.keys())
                     self.assertEqual(data['success'], True)
+                    self.assertEqual(len(data['movies']),1)
                 else:
                     self.assertNotIn('movies', data.keys())
                     self.assertEqual(data['success'], False)
@@ -147,7 +150,7 @@ class TestMovie(unittest.TestCase):
                 self.assertEqual(data['success'], False)
 
 
-class TestGender(unittest.TestCase):
+class TestGenders(unittest.TestCase):
     def setUp(self):
         self.app = APP
         self.client = self.app.test_client
@@ -159,9 +162,12 @@ class TestGender(unittest.TestCase):
             self.db.init_app(self.app)
 
         # prepare the table, clear records, create seed record
+        self.setup_success, self.seed_id = prepare_genders()
+
         self.token = os.getenv('TOKEN') if len(
             os.getenv('TOKEN')) > 0 else None
-        self.get_gender_id = 1
+        self.token_detail = decode_jwt(self.token)
+        print(self.token_detail)
 
     def tearDown(self):
         pass
@@ -187,7 +193,7 @@ class TestGender(unittest.TestCase):
 
     def test_get_gender(self):
         token = self.token
-        response = self.client().get(f'/genders/{self.get_gender_id}', headers={"Authorization": f"Bearer {token}"})
+        response = self.client().get(f'/genders/{self.seed_id}', headers={"Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
