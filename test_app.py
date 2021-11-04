@@ -8,10 +8,10 @@ from auth import verify_decode_jwt
 from models import setup_db, Gender, Casting, Actor, Movie
 from jose import jwt
 from urllib.request import urlopen
-from test_utilities import generate_movie
+from test_utilities import generate_movie, prepare_movies
 
 
-class CapstoneTestCase(unittest.TestCase):
+class TestMovie(unittest.TestCase):
     def setUp(self):
         self.app = APP
         self.client = self.app.test_client
@@ -22,6 +22,8 @@ class CapstoneTestCase(unittest.TestCase):
             self.db.app = self.app
             self.db.init_app(self.app)
 
+        # prepare the table, clear records, create seed record
+        prepare_movies()
         self.get_movie_id = 1
         self.token = os.getenv('TOKEN') if len(
             os.getenv('TOKEN')) > 0 else None
@@ -144,6 +146,65 @@ class CapstoneTestCase(unittest.TestCase):
                 self.assertNotIn('movies', data.keys())
                 self.assertEqual(data['success'], False)
 
+
+class TestGender(unittest.TestCase):
+    def setUp(self):
+        self.app = APP
+        self.client = self.app.test_client
+        setup_db(self.app)
+
+        with self.app.app_context():
+            self.db = SQLAlchemy()
+            self.db.app = self.app
+            self.db.init_app(self.app)
+
+        # prepare the table, clear records, create seed record
+        self.token = os.getenv('TOKEN') if len(
+            os.getenv('TOKEN')) > 0 else None
+        self.get_gender_id = 1
+
+    def tearDown(self):
+        pass
+
+    def test_get_genders(self):
+        token = self.token
+        response = self.client().get(
+            '/genders', headers={"Authorization": f"Bearer {token}"})
+        data = json.loads(response.data)
+        if token is None:
+            self.assertEqual(response.status_code, 401)
+            self.assertEqual(data['success'], False)
+            self.assertEqual(data['message'], 'token not found.')
+            self.assertNotIn('genders', data.keys())
+        else:
+            self.assertIn(response.status_code, [200, 401])
+            if response.status_code == 200:
+                self.assertIn('genders', data.keys())
+                self.assertEqual(data['success'], True)
+            else:
+                self.assertNotIn('genders', data.keys())
+                self.assertEqual(data['success'], False)
+
+    def test_get_gender(self):
+        token = self.token
+        response = self.client().get(f'/genders/{self.get_gender_id}', headers={"Authorization": f"Bearer {token}"})
+        data = json.loads(response.data)
+        if token is None:
+            self.assertEqual(response.status_code, 401)
+            self.assertEqual(data['success'], False)
+            self.assertEqual(data['message'], 'token not found.')
+            self.assertNotIn('genders', data.keys())
+        else:
+            self.assertIn(response.status_code, [200, 401])
+            
+            if response.status_code == 200:
+                print(data['genders'])
+                self.assertIn('genders', data.keys())
+                self.assertEqual(data['success'], True)
+            else:
+                print("Here")
+                self.assertNotIn('genders', data.keys())
+                self.assertEqual(data['success'], False)
 
 if __name__ == "__main__":
     unittest.main()
