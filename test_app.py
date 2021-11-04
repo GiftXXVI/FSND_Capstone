@@ -9,6 +9,7 @@ from auth import verify_decode_jwt
 from models import setup_db, Gender, Casting, Actor, Movie
 from jose import jwt
 from urllib.request import urlopen
+from test_utilities import generate_movie
 
 
 class CapstoneTestCase(unittest.TestCase):
@@ -101,6 +102,45 @@ class CapstoneTestCase(unittest.TestCase):
                 self.assertNotIn('movies', data.keys())
                 self.assertEqual(data['success'], False)
 
+    def test_patch_movie(self):
+        token = self.token
+        movie = generate_movie()
+        movie.title = 'Terminator 3: Rise of the Machines'
+        movie.release_date = '2003-06-30T00:00:00.511Z'
+        response = self.client().patch(f'/movies/{movie.id}', json=movie.format())
+        data = json.loads(response.data)
+        if token is None:
+            self.assertEqual(response.status_code, 401)
+            self.assertEqual(data['success'], False)
+            self.assertEqual(data['message'], 'token not found.')
+            self.assertNotIn('movies', data.keys())
+        else:
+            self.assertIn(response.status_code, [200, 401])
+            if response.status_code == 200:
+                self.assertIn('movies', data.keys())
+                self.assertEqual(data['success'], True)
+            else:
+                self.assertNotIn('movies', data.keys())
+                self.assertEqual(data['success'], False)
+
+    def test_delete_movie(self):
+        token = self.token
+        movie = generate_movie()
+        response = self.client().delete(f'/movies/{movie.id}')
+        data = json.loads(response.data)
+        if token is None:
+            self.assertEqual(response.status_code, 401)
+            self.assertEqual(data['success'], False)
+            self.assertEqual(data['message'], 'token not found.')
+            self.assertNotIn('movies', data.keys())
+        else:
+            self.assertIn(response.status_code, [200, 401])
+            if response.status_code == 200:
+                self.assertIn('movies', data.keys())
+                self.assertEqual(data['success'], True)
+            else:
+                self.assertNotIn('movies', data.keys())
+                self.assertEqual(data['success'], False)
 
 if __name__ == "__main__":
     unittest.main()
