@@ -295,7 +295,7 @@ class TestGenders(unittest.TestCase):
         gender = generate_gender()
         gender.name = "F"
         response = self.client().patch(
-            f'/genders/{gender.id}', headers={"Authorization": f"Bearer {token}"}, json=gender)
+            f'/genders/{gender.id}', headers={"Authorization": f"Bearer {token}"}, json=gender.format())
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)

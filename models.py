@@ -16,7 +16,7 @@ db_port = os.getenv('DATABASE_PORT')
 db_cred = f'{db_user}:{db_pass}'
 db_sock = f'{db_host}:{db_port}'
 db_url = f'postgresql://{db_cred}@{db_sock}/{db_name}'
-test_db_url = f'postgresql://{db_cred}@{db_sock}/{db_name}'
+test_db_url = f'postgresql://{db_cred}@{db_sock}/{test_db_name}'
 
 
 def setup_db(app, test_mode=False):
