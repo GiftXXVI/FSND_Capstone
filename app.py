@@ -8,9 +8,11 @@ from castings_blueprint import castings_blueprint
 from genders_blueprint import genders_blueprint
 from movies_blueprint import movies_blueprint
 from models import setup_db, get_db
+import os
 
 db = SQLAlchemy()
 migrate = Migrate()
+test_mode = os.getenv('TEST_MODE')
 
 
 def create_app(test_config=None):
@@ -20,13 +22,17 @@ def create_app(test_config=None):
     app.register_blueprint(movies_blueprint)
     app.register_blueprint(genders_blueprint)
     app.register_blueprint(castings_blueprint)
-    CORS(app)
-    setup_db(app,test_mode=True)
+    CORS(app) 
+    if test_mode:
+        setup_db(app, test_mode=True)
+    else:
+        setup_db(app)
     db, migrate = get_db()
+    
     return app
 
 
-APP = create_app()
+APP = create_app(test_config=test_mode)
 
 
 @APP.after_request

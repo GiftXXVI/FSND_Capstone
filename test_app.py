@@ -8,14 +8,14 @@ from auth import verify_decode_jwt
 from models import setup_db, Gender, Casting, Actor, Movie
 from jose import jwt
 from urllib.request import urlopen
-from test_utilities import decode_jwt, generate_movie, prepare_genders, prepare_movies
+from test_utilities import decode_jwt, generate_gender, generate_movie, prepare_genders, prepare_movies
 
 
 class TestMovies(unittest.TestCase):
     def setUp(self):
         self.app = APP
         self.client = self.app.test_client
-        setup_db(self.app)
+        setup_db(self.app, test_mode=True)
 
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -185,7 +185,7 @@ class TestGenders(unittest.TestCase):
     def setUp(self):
         self.app = APP
         self.client = self.app.test_client
-        setup_db(self.app)
+        setup_db(self.app, test_mode=True)
 
         with self.app.app_context():
             self.db = SQLAlchemy()
@@ -290,5 +290,32 @@ class TestGenders(unittest.TestCase):
                     self.assertNotIn('genders', data.keys())
                     self.assertEqual(data['success'], False)
 
+    def test_patch_gender(self):
+        token = self.token
+        gender = generate_gender()
+        gender.name = "F"
+        response = self.client().patch(
+            f'/genders/{gender.id}', headers={"Authorization": f"Bearer {token}"}, json=gender)
+        data = json.loads(response.data)
+        if token is None:
+            self.assertEqual(response.status_code, 401)
+            self.assertEqual(data['success'], False)
+            self.assertEqual(data['message'], 'token not found.')
+            self.assertNotIn('genders', data.keys())
+        else:
+            if self.token_detail == 'expired':
+                self.assertEqual(response.status_code, 401)
+                self.assertNotIn('genders', data.keys())
+                self.assertEqual(data['success'], False)
+            else:
+                permissions = self.token_detail['permissions']
+                if 'patch:genders' in permissions:
+                    self.assertEqual(response.status_code, 200)
+                    self.assertIn('genders', data.keys())
+                    self.assertEqual(data['success'], True)
+                else:
+                    self.assertEqual(response.status_code, 401)
+                    self.assertNotIn('genders', data.keys())
+                    self.assertEqual(data['success'], False)
 if __name__ == "__main__":
     unittest.main()

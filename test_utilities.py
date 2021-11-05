@@ -40,6 +40,16 @@ def generate_movie():
     return movie
 
 
+def generate_gender():
+    name = ''.join(random.choices(
+        string.ascii_uppercase + string.digits, k=5))
+    gender = Gender(name=name)
+    gender.insert()
+    gender.apply()
+    gender.refresh()
+    return gender
+
+
 def decode_jwt(token):
     AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
     API_AUDIENCE = os.getenv("API_AUDIENCE")
