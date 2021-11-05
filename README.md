@@ -26,6 +26,8 @@ The API depends on the presence of a postgresql database, whose name should be p
 
 Unit Tests depend on the presence of a database (preferably a separate database), properly configured in the `TEST_DATABASE_NAME` environment variable.
 
+Both databases (live and test) should have their schema created by running migrations against each database.
+
 ## Resource Endpoint Library
 
 ### Movies
