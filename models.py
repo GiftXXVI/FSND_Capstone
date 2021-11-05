@@ -8,6 +8,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 
 db_name = os.getenv('DATABASE_NAME')
+test_db_name = os.getenv('TEST_DATABASE_NAME')
 db_user = os.getenv('DATABASE_USER')
 db_pass = os.getenv('DATABASE_PASS')
 db_host = os.getenv('DATABASE_HOST')
@@ -15,9 +16,14 @@ db_port = os.getenv('DATABASE_PORT')
 db_cred = f'{db_user}:{db_pass}'
 db_sock = f'{db_host}:{db_port}'
 db_url = f'postgresql://{db_cred}@{db_sock}/{db_name}'
+test_db_url = f'postgresql://{db_cred}@{db_sock}/{db_name}'
 
 
-def setup_db(app, db_path=db_url):
+def setup_db(app, test_mode=False):
+    if test_mode:
+        db_path=test_db_url
+    else:
+        db_path=db_url
     app.config["SQLALCHEMY_DATABASE_URI"] = db_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app

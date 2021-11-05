@@ -21,7 +21,7 @@ def create_app(test_config=None):
     app.register_blueprint(genders_blueprint)
     app.register_blueprint(castings_blueprint)
     CORS(app)
-    setup_db(app)
+    setup_db(app,test_mode=True)
     db, migrate = get_db()
     return app
 

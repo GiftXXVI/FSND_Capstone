@@ -21,7 +21,10 @@ pip install -r requirements.txt
 
 ## Errors
 
+## Databases
+The API depends on the presence of a postgresql database, whose name should be properly configured in the `DATABASE_NAME` environment variable.
 
+Unit Tests depend on the presence of a database (preferably a separate database), properly configured in the `TEST_DATABASE_NAME` environment variable.
 
 ## Resource Endpoint Library
 
