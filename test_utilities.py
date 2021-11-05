@@ -1,16 +1,21 @@
-from os import name
+import os
 import string
 import random
+import json
+from jose import jwt
+from urllib.request import urlopen
 from models import setup_db, Gender, Casting, Actor, Movie
 
 
 def prepare_movies():
     Movie.query.delete()
-    seed_movie = Movie(title="The Girl with the Dragon Tattoo", release_date="2011-12-20")
+    seed_movie = Movie(title="The Girl with the Dragon Tattoo",
+                       release_date="2011-12-20")
     seed_movie.insert()
     seed_movie.apply()
     seed_movie.delete()
     return True, seed_movie.id
+
 
 def prepare_genders():
     Gender.query.delete()
@@ -19,6 +24,7 @@ def prepare_genders():
     seed_gender.apply()
     seed_gender.delete()
     return True, seed_gender.id
+
 
 def generate_movie():
     title = ''.join(random.choices(

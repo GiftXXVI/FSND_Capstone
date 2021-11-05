@@ -49,43 +49,44 @@ class TestMovies(unittest.TestCase):
             self.assertEqual(data['message'], 'token not found.')
             self.assertNotIn('movies', data.keys())
         else:
-            # test response code
-            self.assertIn(response.status_code, [200, 401])
-
-            if response.status_code == 200:
+            if self.token_detail == 'expired':
+                self.assertEqual(response.status_code, 401)
+                self.assertEqual(data['success'], False)
+                self.assertNotIn('movies', data.keys())
+            else:
+                # test response code
+                self.assertEqual(response.status_code, 200)
                 # test response body
                 self.assertEqual(data['success'], True)
                 self.assertIn('movies', data.keys())
-                self.assertGreaterEqual(len(data['movies']),1)
-            else:
-                self.assertEqual(data['success'], False)
-                self.assertNotIn('movies', data.keys())
+                self.assertGreaterEqual(len(data['movies']), 1)
 
     def test_get_movie(self):
         movie = Movie.query.filter(Movie.id == self.seed_id).one_or_none()
         token = self.token
         response = self.client().get(
-            f'/movies/{self.get_movie_id}', headers={"Authorization": f"Bearer {token}"})
+            f'/movies/{self.seed_id}', headers={"Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
             self.assertEqual(data['success'], False)
             self.assertEqual(data['message'], 'token not found.')
             self.assertNotIn('movies', data.keys())
-        else:
-            if movie is None:
-                self.assertIn(response.status_code, [404, 401])
+        else:            
+            if self.token_detail == 'expired':
+                self.assertEqual(response.status_code, 401)
                 self.assertNotIn('movies', data.keys())
                 self.assertEqual(data['success'], False)
             else:
-                self.assertIn(response.status_code, [200, 401])
-                if response.status_code == 200:
-                    self.assertIn('movies', data.keys())
-                    self.assertEqual(data['success'], True)
-                    self.assertEqual(len(data['movies']),1)
-                else:
+                if movie is None:
+                    self.assertEqual(response.status_code, 404)
                     self.assertNotIn('movies', data.keys())
                     self.assertEqual(data['success'], False)
+                else:
+                    self.assertEqual(response.status_code, 200)
+                    self.assertIn('movies', data.keys())
+                    self.assertEqual(data['success'], True)
+                    self.assertEqual(len(data['movies']), 1)
 
     def test_post_movie(self):
         token = self.token
@@ -99,13 +100,14 @@ class TestMovies(unittest.TestCase):
             self.assertEqual(data['message'], 'token not found.')
             self.assertNotIn('movies', data.keys())
         else:
-            self.assertIn(response.status_code, [200, 401])
-            if response.status_code == 200:
-                self.assertIn('movies', data.keys())
-                self.assertEqual(data['success'], True)
-            else:
+            if self.token_detail == 'expired':
+                self.assertEqual(response.status_code, 401)
                 self.assertNotIn('movies', data.keys())
                 self.assertEqual(data['success'], False)
+            else:
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('movies', data.keys())
+                self.assertEqual(data['success'], True)
 
     def test_patch_movie(self):
         token = self.token
@@ -121,13 +123,14 @@ class TestMovies(unittest.TestCase):
             self.assertEqual(data['message'], 'token not found.')
             self.assertNotIn('movies', data.keys())
         else:
-            self.assertIn(response.status_code, [200, 401])
-            if response.status_code == 200:
-                self.assertIn('movies', data.keys())
-                self.assertEqual(data['success'], True)
-            else:
+            if self.token_detail == 'expired':
+                self.assertEqual(response.status_code, 401)
                 self.assertNotIn('movies', data.keys())
                 self.assertEqual(data['success'], False)
+            else:
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('movies', data.keys())
+                self.assertEqual(data['success'], True)
 
     def test_delete_movie(self):
         token = self.token
@@ -141,13 +144,14 @@ class TestMovies(unittest.TestCase):
             self.assertEqual(data['message'], 'token not found.')
             self.assertNotIn('movies', data.keys())
         else:
-            self.assertIn(response.status_code, [200, 401])
-            if response.status_code == 200:
-                self.assertIn('movies', data.keys())
-                self.assertEqual(data['success'], True)
-            else:
+            if self.token_detail == 'expired':
+                self.assertEqual(response.status_code, 401)
                 self.assertNotIn('movies', data.keys())
                 self.assertEqual(data['success'], False)
+            else:
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('movies', data.keys())
+                self.assertEqual(data['success'], True)
 
 
 class TestGenders(unittest.TestCase):
@@ -183,17 +187,19 @@ class TestGenders(unittest.TestCase):
             self.assertEqual(data['message'], 'token not found.')
             self.assertNotIn('genders', data.keys())
         else:
-            self.assertIn(response.status_code, [200, 401])
-            if response.status_code == 200:
-                self.assertIn('genders', data.keys())
-                self.assertEqual(data['success'], True)
-            else:
+            if self.token_detail == 'expired':
+                self.assertEqual(response.status_code, 401)
                 self.assertNotIn('genders', data.keys())
                 self.assertEqual(data['success'], False)
+            else:
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('genders', data.keys())
+                self.assertEqual(data['success'], True)
 
     def test_get_gender(self):
         token = self.token
-        response = self.client().get(f'/genders/{self.seed_id}', headers={"Authorization": f"Bearer {token}"})
+        response = self.client().get(
+            f'/genders/{self.seed_id}', headers={"Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -201,16 +207,16 @@ class TestGenders(unittest.TestCase):
             self.assertEqual(data['message'], 'token not found.')
             self.assertNotIn('genders', data.keys())
         else:
-            self.assertIn(response.status_code, [200, 401])
-            
-            if response.status_code == 200:
-                print(data['genders'])
-                self.assertIn('genders', data.keys())
-                self.assertEqual(data['success'], True)
-            else:
-                print("Here")
+            if self.token_detail == 'expired':
+                self.assertEqual(response.status_code, 401)
                 self.assertNotIn('genders', data.keys())
                 self.assertEqual(data['success'], False)
+            else:
+                print(data['genders'])
+                self.assertEqual(response.status_code, 200)
+                self.assertIn('genders', data.keys())
+                self.assertEqual(data['success'], True)
+
 
 if __name__ == "__main__":
     unittest.main()
