@@ -13,7 +13,9 @@ def prepare_movies():
                        release_date="2011-12-20")
     seed_movie.insert()
     seed_movie.apply()
-    seed_movie.delete()
+    seed_movie.refresh()
+    id = seed_movie.id
+    seed_movie.dispose()
     return True, seed_movie.id
 
 
@@ -22,8 +24,10 @@ def prepare_genders():
     seed_gender = Gender(name="Male")
     seed_gender.insert()
     seed_gender.apply()
-    seed_gender.delete()
-    return True, seed_gender.id
+    seed_gender.refresh()
+    id = seed_gender.id
+    seed_gender.dispose()
+    return True, id
 
 
 def generate_movie():

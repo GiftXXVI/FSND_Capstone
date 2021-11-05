@@ -27,11 +27,8 @@ class TestMovies(unittest.TestCase):
         self.token = os.getenv('TOKEN') if len(
             os.getenv('TOKEN')) > 0 else None
         self.token_detail = decode_jwt(self.token)
-        print(self.token_detail)
         self.post_movie = {"title": "Blade Runner 2049",
                            "release_date": "2017-10-03T00:00:00.511Z"}
-        self.post_invalid_date_movie = {
-            "title": "Blade Runner 2049", "release_date": "2017-02-31T00:00:00.511Z"}
         self.post_invalid_movie = {"title": ""}
 
     def tearDown(self):
@@ -54,12 +51,18 @@ class TestMovies(unittest.TestCase):
                 self.assertEqual(data['success'], False)
                 self.assertNotIn('movies', data.keys())
             else:
-                # test response code
-                self.assertEqual(response.status_code, 200)
-                # test response body
-                self.assertEqual(data['success'], True)
-                self.assertIn('movies', data.keys())
-                self.assertGreaterEqual(len(data['movies']), 1)
+                permissions = self.token_detail['permissions']
+                if 'get:movies' in permissions:
+                    # test response code
+                    self.assertEqual(response.status_code, 200)
+                    # test response body
+                    self.assertEqual(data['success'], True)
+                    self.assertIn('movies', data.keys())
+                    self.assertGreaterEqual(len(data['movies']), 1)
+                else:
+                    self.assertEqual(response.status_code, 401)
+                    self.assertEqual(data['success'], False)
+                    self.assertNotIn('movies', data.keys())
 
     def test_get_movie(self):
         movie = Movie.query.filter(Movie.id == self.seed_id).one_or_none()
@@ -72,7 +75,7 @@ class TestMovies(unittest.TestCase):
             self.assertEqual(data['success'], False)
             self.assertEqual(data['message'], 'token not found.')
             self.assertNotIn('movies', data.keys())
-        else:            
+        else:
             if self.token_detail == 'expired':
                 self.assertEqual(response.status_code, 401)
                 self.assertNotIn('movies', data.keys())
@@ -83,10 +86,16 @@ class TestMovies(unittest.TestCase):
                     self.assertNotIn('movies', data.keys())
                     self.assertEqual(data['success'], False)
                 else:
-                    self.assertEqual(response.status_code, 200)
-                    self.assertIn('movies', data.keys())
-                    self.assertEqual(data['success'], True)
-                    self.assertEqual(len(data['movies']), 1)
+                    permissions = self.token_detail['permissions']
+                    if 'get:movies' in permissions:
+                        self.assertEqual(response.status_code, 200)
+                        self.assertIn('movies', data.keys())
+                        self.assertEqual(data['success'], True)
+                        self.assertEqual(len(data['movies']), 1)
+                    else:
+                        self.assertEqual(response.status_code, 404)
+                        self.assertNotIn('movies', data.keys())
+                        self.assertEqual(data['success'], False)
 
     def test_post_movie(self):
         token = self.token
@@ -105,9 +114,15 @@ class TestMovies(unittest.TestCase):
                 self.assertNotIn('movies', data.keys())
                 self.assertEqual(data['success'], False)
             else:
-                self.assertEqual(response.status_code, 200)
-                self.assertIn('movies', data.keys())
-                self.assertEqual(data['success'], True)
+                permissions = self.token_detail['permissions']
+                if 'post:movies' in permissions:
+                    self.assertEqual(response.status_code, 200)
+                    self.assertIn('movies', data.keys())
+                    self.assertEqual(data['success'], True)
+                else:
+                    self.assertEqual(response.status_code, 401)
+                    self.assertNotIn('movies', data.keys())
+                    self.assertEqual(data['success'], False)
 
     def test_patch_movie(self):
         token = self.token
@@ -128,9 +143,15 @@ class TestMovies(unittest.TestCase):
                 self.assertNotIn('movies', data.keys())
                 self.assertEqual(data['success'], False)
             else:
-                self.assertEqual(response.status_code, 200)
-                self.assertIn('movies', data.keys())
-                self.assertEqual(data['success'], True)
+                permissions = self.token_detail['permissions']
+                if 'patch:movies' in permissions:
+                    self.assertEqual(response.status_code, 200)
+                    self.assertIn('movies', data.keys())
+                    self.assertEqual(data['success'], True)
+                else:
+                    self.assertEqual(response.status_code, 401)
+                    self.assertNotIn('movies', data.keys())
+                    self.assertEqual(data['success'], False)
 
     def test_delete_movie(self):
         token = self.token
@@ -149,9 +170,15 @@ class TestMovies(unittest.TestCase):
                 self.assertNotIn('movies', data.keys())
                 self.assertEqual(data['success'], False)
             else:
-                self.assertEqual(response.status_code, 200)
-                self.assertIn('movies', data.keys())
-                self.assertEqual(data['success'], True)
+                permissions = self.token_detail['permissions']
+                if 'delete:movies' in permissions:
+                    self.assertEqual(response.status_code, 200)
+                    self.assertIn('movies', data.keys())
+                    self.assertEqual(data['success'], True)
+                else:
+                    self.assertEqual(response.status_code, 401)
+                    self.assertNotIn('movies', data.keys())
+                    self.assertEqual(data['success'], False)
 
 
 class TestGenders(unittest.TestCase):
@@ -171,7 +198,6 @@ class TestGenders(unittest.TestCase):
         self.token = os.getenv('TOKEN') if len(
             os.getenv('TOKEN')) > 0 else None
         self.token_detail = decode_jwt(self.token)
-        print(self.token_detail)
 
     def tearDown(self):
         pass
@@ -192,9 +218,15 @@ class TestGenders(unittest.TestCase):
                 self.assertNotIn('genders', data.keys())
                 self.assertEqual(data['success'], False)
             else:
-                self.assertEqual(response.status_code, 200)
-                self.assertIn('genders', data.keys())
-                self.assertEqual(data['success'], True)
+                permissions = self.token_detail['permissions']
+                if 'get:genders' in permissions:
+                    self.assertEqual(response.status_code, 200)
+                    self.assertIn('genders', data.keys())
+                    self.assertEqual(data['success'], True)
+                else:
+                    self.assertEqual(response.status_code, 401)
+                    self.assertNotIn('genders', data.keys())
+                    self.assertEqual(data['success'], False)
 
     def test_get_gender(self):
         token = self.token
@@ -212,10 +244,15 @@ class TestGenders(unittest.TestCase):
                 self.assertNotIn('genders', data.keys())
                 self.assertEqual(data['success'], False)
             else:
-                print(data['genders'])
-                self.assertEqual(response.status_code, 200)
-                self.assertIn('genders', data.keys())
-                self.assertEqual(data['success'], True)
+                permissions = self.token_detail['permissions']
+                if 'get:genders' in permissions:
+                    self.assertEqual(response.status_code, 200)
+                    self.assertIn('genders', data.keys())
+                    self.assertEqual(data['success'], True)
+                else:
+                    self.assertEqual(response.status_code, 401)
+                    self.assertNotIn('genders', data.keys())
+                    self.assertEqual(data['success'], False)
 
 
 if __name__ == "__main__":
