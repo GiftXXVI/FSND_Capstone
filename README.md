@@ -1,8 +1,22 @@
-# Casting API Documentation
+# Casting API
+
+[![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) 
 
 ## Introduction
 
+The Casting API is a web API for casting actors in movies. It is a Flask based API backend designed to be used with a Javascript based frontend client.
+
+The motivation behind its development is to create a simple, secure API for casting actors in movies.
+
+The API code has been written according to pep8 guidelines.
+
 ## Getting Started
+
+Install all dependencies by running the following command from the root directory (preferably after creating a virtual environment):
+
+```
+pip install -r requirements.txt
+```
 
 ## Errors
 
