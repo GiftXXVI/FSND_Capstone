@@ -194,6 +194,7 @@ class TestGenders(unittest.TestCase):
 
         # prepare the table, clear records, create seed record
         self.setup_success, self.seed_id = prepare_genders()
+        self.post_gender = {"name": "Female"}
 
         self.token = os.getenv('TOKEN') if len(
             os.getenv('TOKEN')) > 0 else None
@@ -223,12 +224,14 @@ class TestGenders(unittest.TestCase):
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('genders', data.keys())
                     self.assertEqual(data['success'], True)
+                    self.assertGreaterEqual(len(data['genders']), 1)
                 else:
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('genders', data.keys())
                     self.assertEqual(data['success'], False)
 
     def test_get_gender(self):
+        gender = Gender.query.filter(Gender.id == self.seed_id).one_or_none()
         token = self.token
         response = self.client().get(
             f'/genders/{self.seed_id}', headers={"Authorization": f"Bearer {token}"})
@@ -244,8 +247,41 @@ class TestGenders(unittest.TestCase):
                 self.assertNotIn('genders', data.keys())
                 self.assertEqual(data['success'], False)
             else:
+                if gender is None:
+                    self.assertEqual(response.status_code, 404)
+                    self.assertNotIn('genders', data.keys())
+                    self.assertEqual(data['success'], False)
+                else:
+                    permissions = self.token_detail['permissions']
+                    if 'get:genders' in permissions:
+                        self.assertEqual(response.status_code, 200)
+                        self.assertIn('genders', data.keys())
+                        self.assertEqual(data['success'], True)
+                        self.assertEqual(len(data['genders']), 1)
+                    else:
+                        self.assertEqual(response.status_code, 401)
+                        self.assertNotIn('genders', data.keys())
+                        self.assertEqual(data['success'], False)
+
+    def test_post_gender(self):
+        token = self.token
+        gender = self.post_gender
+        response = self.client().post(
+            '/genders', headers={"Authorization": f"Bearer {token}"}, json=gender)
+        data = json.loads(response.data)
+        if token is None:
+            self.assertEqual(response.status_code, 401)
+            self.assertEqual(data['success'], False)
+            self.assertEqual(data['message'], 'token not found.')
+            self.assertNotIn('genders', data.keys())
+        else:
+            if self.token_detail == 'expired':
+                self.assertEqual(response.status_code, 401)
+                self.assertNotIn('genders', data.keys())
+                self.assertEqual(data['success'], False)
+            else:
                 permissions = self.token_detail['permissions']
-                if 'get:genders' in permissions:
+                if 'post:genders' in permissions:
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('genders', data.keys())
                     self.assertEqual(data['success'], True)
@@ -253,7 +289,6 @@ class TestGenders(unittest.TestCase):
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('genders', data.keys())
                     self.assertEqual(data['success'], False)
-
 
 if __name__ == "__main__":
     unittest.main()
