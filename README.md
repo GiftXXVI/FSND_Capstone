@@ -13,7 +13,7 @@ The API code has been written according to pep8 guidelines.
 
 ## Getting Started
 
-Install all dependencies by running the following command from the root directory (preferably after creating a virtual environment):
+Install all dependencies by running the following command from the root directory (preferably inside a virtual environment):
 
 ```
 pip install -r requirements.txt
