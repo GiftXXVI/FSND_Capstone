@@ -19,14 +19,52 @@ Install all dependencies by running the following command from the root director
 pip install -r requirements.txt
 ```
 
-## Errors
-
-## Databases
+### Databases
 The API depends on the presence of a postgresql database, whose name should be properly configured in the `DATABASE_NAME` environment variable.
 
 Unit Tests depend on the presence of a database (preferably a separate database), properly configured in the `TEST_DATABASE_NAME` environment variable.
 
-Both databases (live and test) should have their schema created by running migrations against each database.
+After both databases (live and test) have been created, update their schema by running migrations against each database.
+
+### Installation
+To start the web API; make sure that the database service is running, navigate to the backend directory and run the following commands:
+```
+export DATABASE_NAME={database_name}
+export TEST_DATABASE_NAME={test_database_name}
+export TEST_MODE={test_mode}
+export DATABASE_USER={username}
+export DATABASE_PASS={password}
+export DATABASE_HOST={hostname}
+export DATABASE_PORT={port_number}
+export TOKEN={token}
+export FLASK_APP=app.py
+export FLASK_ENV=development
+```
+Where:
+- `DATABASE_NAME` is the name of the live database
+- `TEST_DATABASE_NAME` is the name of the test database
+- `TEST_MODE` is a flag taking values `0` (`False`) or `1` (`True`) indicating whether to connect to the test database (if value is `1`) or not (if value is `0`)
+- `DATABASE_USER` is the user account used to connect to the database
+- `DATABASE_PASS` is the password for the account that is used to connect to the database
+- `DATABASE_HOST` is the hostname or IP address of the database server
+- `DATABASE_PORT` is the port number of the database service
+- `TOKEN` is a valid token
+
+To start the application, run the following command:
+```
+flask run
+```
+If the database is not running, it can be started using the following command:
+```
+sudo service postgresql start
+```
+You can then verify that the API is accessible by running the following curl command:
+```
+curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/movies
+```
+## Unit Tests
+
+## Errors
 
 ## Resource Endpoint Library
 
