@@ -47,22 +47,24 @@ def create_actor():
             abort(400)
         else:
             actor = Actor(name=name, dob=dob, gender_id=gender_id)
-            try:
-                actor.insert()
-                actor.apply()
-                actor.refresh()
-                format_actors = [actor.format()]
-            except:
-                actor.rollback()
-                success = False
-            finally:
-                actor.dispose()
-                if success:
-                    return jsonify({
-                        "success": success,
-                        'created': actor.id,
-                        'actors': format_actors
-                    })
+            #try:
+            actor.insert()
+            actor.apply()
+            actor.refresh()
+            format_actors = [actor.format()]
+            #except:
+            #    actor.rollback()
+            #    success = False
+            #finally:
+                #actor.dispose()
+                #if success:
+            return jsonify({
+                "success": success,
+                'created': actor.id,
+                'actors': format_actors
+            })
+                #else:
+                #    abort(422)
 
 
 @actors_blueprint.route('/actors/<int:actor_id>', methods=['PATCH'])
@@ -103,7 +105,7 @@ def modify_actor(actor_id):
                         })
 
 
-@actors_blueprint.route('/actors/<int:actor_id>',methods=['DELETE'])
+@actors_blueprint.route('/actors/<int:actor_id>', methods=['DELETE'])
 @requires_auth(permission='delete:actors')
 def delete_actor(actor_id):
     success = True

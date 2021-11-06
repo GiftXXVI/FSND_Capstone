@@ -1,3 +1,4 @@
+from datetime import datetime, date, timedelta
 import os
 import string
 import random
@@ -61,6 +62,18 @@ def generate_gender():
     gender.apply()
     gender.refresh()
     return gender
+
+
+def generate_actor(gender_id):
+    name = ''.join(random.choices(
+        string.ascii_uppercase + string.digits, k=5))
+    dob = date(1970, 1, 1) + \
+        timedelta(days=random.randint(0, 50)*365)
+    actor = Actor(name=name, dob=dob, gender_id=gender_id)
+    actor.insert()
+    actor.apply()
+    actor.refresh()
+    return actor
 
 
 def decode_jwt(token):

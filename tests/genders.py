@@ -46,12 +46,15 @@ class TestGenders(unittest.TestCase):
                 self.assertEqual(data['success'], False)
             else:
                 permissions = self.token_detail['permissions']
-                if 'get:genders' in permissions:
+                permission = 'get:genders'
+                if permission in permissions:
+                    print(f'\n has {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('genders', data.keys())
                     self.assertEqual(data['success'], True)
                     self.assertGreaterEqual(len(data['genders']), 1)
                 else:
+                    print(f'\n no {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('genders', data.keys())
                     self.assertEqual(data['success'], False)
@@ -79,12 +82,15 @@ class TestGenders(unittest.TestCase):
                     self.assertEqual(data['success'], False)
                 else:
                     permissions = self.token_detail['permissions']
-                    if 'get:genders' in permissions:
+                    permission = 'get:genders'
+                    if permission in permissions:
+                        print(f'\n has {permission}, return code: {response.status_code}')
                         self.assertEqual(response.status_code, 200)
                         self.assertIn('genders', data.keys())
                         self.assertEqual(data['success'], True)
                         self.assertEqual(len(data['genders']), 1)
                     else:
+                        print(f'\n no {permission}, return code: {response.status_code}')
                         self.assertEqual(response.status_code, 401)
                         self.assertNotIn('genders', data.keys())
                         self.assertEqual(data['success'], False)
@@ -107,11 +113,14 @@ class TestGenders(unittest.TestCase):
                 self.assertEqual(data['success'], False)
             else:
                 permissions = self.token_detail['permissions']
+                permission = 'post:genders'
                 if 'post:genders' in permissions:
+                    print(f'\n has {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('genders', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
+                    print(f'\n no {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('genders', data.keys())
                     self.assertEqual(data['success'], False)
@@ -135,11 +144,14 @@ class TestGenders(unittest.TestCase):
                 self.assertEqual(data['success'], False)
             else:
                 permissions = self.token_detail['permissions']
-                if 'patch:genders' in permissions:
+                permission = 'patch:genders' 
+                if permission in permissions:
+                    print(f'\n has {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('genders', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
+                    print(f'\n no {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('genders', data.keys())
                     self.assertEqual(data['success'], False)
@@ -162,11 +174,14 @@ class TestGenders(unittest.TestCase):
                 self.assertEqual(data['success'], False)
             else:
                 permissions = self.token_detail['permissions']
-                if 'delete:genders' in permissions:
+                permission = 'delete:genders'
+                if permission in permissions:
+                    print(f'\n has {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('genders', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
+                    print(f'\n no {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('genders', data.keys())
                     self.assertEqual(data['success'], False)

@@ -21,9 +21,9 @@ test_db_url = f'postgresql://{db_cred}@{db_sock}/{test_db_name}'
 
 def setup_db(app, test_mode=False):
     if test_mode:
-        db_path=test_db_url
+        db_path = test_db_url
     else:
-        db_path=db_url
+        db_path = db_url
     app.config["SQLALCHEMY_DATABASE_URI"] = db_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
@@ -33,6 +33,7 @@ def setup_db(app, test_mode=False):
 
 def get_db():
     return db
+
 
 def get_migrate():
     return migrate
@@ -104,6 +105,14 @@ class Actor(db.Model, CastModel):
         today = now.date()
         age = relativedelta(today, self.dob).years
         return age
+
+    def in_format(self):
+        return{
+            'id': self.id,
+            'name': self.name,
+            'dob': self.dob,
+            'gender_id': self.gender_id
+        }
 
     def format(self):
         return{
