@@ -78,7 +78,7 @@ class Movie(db.Model, CastModel):
         self.release_date = release_date
 
     def format(self):
-        return{
+        return {
             'id': self.id,
             'title': self.title,
             'release_date': self.release_date
@@ -107,7 +107,7 @@ class Actor(db.Model, CastModel):
         return age
 
     def in_format(self):
-        return{
+        return {
             'id': self.id,
             'name': self.name,
             'dob': self.dob,
@@ -115,7 +115,7 @@ class Actor(db.Model, CastModel):
         }
 
     def format(self):
-        return{
+        return {
             'id': self.id,
             'name': self.name,
             'dob': self.dob,
@@ -135,7 +135,7 @@ class Gender(db.Model, CastModel):
         self.name = name
 
     def format(self):
-        return{
+        return {
             'id': self.id,
             'name': self.name
         }
@@ -164,8 +164,17 @@ class Casting(db.Model, CastModel):
         else:
             return 'N'
 
+    def in_format(self):
+        return {
+            'id': self.id,
+            'actor_id': self.actor_id,
+            'movie_id': self.movie_id,
+            'casting_date': self.casting_date,
+            'recast_yn': int(self.recast_yn)
+        }
+
     def format(self):
-        return{
+        return {
             'id': self.id,
             'actor': self.actor.name,
             'movie': self.movie.title,

@@ -47,24 +47,24 @@ def create_actor():
             abort(400)
         else:
             actor = Actor(name=name, dob=dob, gender_id=gender_id)
-            #try:
-            actor.insert()
-            actor.apply()
-            actor.refresh()
-            format_actors = [actor.format()]
-            #except:
-            #    actor.rollback()
-            #    success = False
-            #finally:
-                #actor.dispose()
-                #if success:
-            return jsonify({
-                "success": success,
-                'created': actor.id,
-                'actors': format_actors
-            })
-                #else:
-                #    abort(422)
+            try:
+                actor.insert()
+                actor.apply()
+                actor.refresh()
+                format_actors = [actor.format()]
+            except:
+                actor.rollback()
+                success = False
+            finally:
+                actor.dispose()
+                if success:
+                    return jsonify({
+                        "success": success,
+                        'created': actor.id,
+                        'actors': format_actors
+                    })
+                else:
+                    abort(422)
 
 
 @actors_blueprint.route('/actors/<int:actor_id>', methods=['PATCH'])

@@ -1,3 +1,4 @@
+from tests.castings import *
 from tests.actors import *
 from tests.movies import *
 from tests.genders import *

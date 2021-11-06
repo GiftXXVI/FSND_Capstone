@@ -9,9 +9,10 @@ from models import setup_db, Gender, Casting, Actor, Movie
 
 
 def prepare_movies():
+    Casting.query.delete()
     Movie.query.delete()
     seed_movie = Movie(title="The Girl with the Dragon Tattoo",
-                       release_date="2011-12-20")
+                       release_date=date(2011, 12, 20))
     seed_movie.insert()
     seed_movie.apply()
     seed_movie.refresh()
@@ -21,6 +22,7 @@ def prepare_movies():
 
 
 def prepare_genders():
+    Casting.query.delete()
     Actor.query.delete()
     Gender.query.delete()
     seed_gender = Gender(name="Male")
@@ -33,9 +35,10 @@ def prepare_genders():
 
 
 def prepare_actors(gender_id):
+    Casting.query.delete()
     Actor.query.delete()
     seed_actor = Actor(name="Ernest Borgnine",
-                       dob='1917-01-24', gender_id=gender_id)
+                       dob=date(1917, 1, 24), gender_id=gender_id)
     seed_actor.insert()
     seed_actor.apply()
     seed_actor.refresh()
@@ -44,10 +47,22 @@ def prepare_actors(gender_id):
     return id
 
 
+def prepare_castings(actor_id, movie_id):
+    Casting.query.delete()
+    seed_casting = Casting(actor_id=actor_id, movie_id=movie_id,
+                           casting_date=datetime.now(), recast_yn=False)
+    seed_casting.insert()
+    seed_casting.apply()
+    seed_casting.refresh()
+    id = seed_casting.id
+    seed_casting.dispose()
+    return id
+
+
 def generate_movie():
     title = ''.join(random.choices(
         string.ascii_uppercase + string.digits, k=20))
-    movie = Movie(title=title, release_date="2001-01-01T00:00:00.511Z")
+    movie = Movie(title=title, release_date=date(2001, 1, 1))
     movie.insert()
     movie.apply()
     movie.refresh()
@@ -67,7 +82,7 @@ def generate_gender():
 def generate_actor(gender_id):
     name = ''.join(random.choices(
         string.ascii_uppercase + string.digits, k=5))
-    dob = date(1970, 1, 1) + \
+    dob = date(1970, 1, 1) +\
         timedelta(days=random.randint(0, 50)*365)
     actor = Actor(name=name, dob=dob, gender_id=gender_id)
     actor.insert()
@@ -75,6 +90,16 @@ def generate_actor(gender_id):
     actor.refresh()
     return actor
 
+
+def generate_casting(actor_id, movie_id):
+    casting_date = datetime.now()
+    recast_yn = False
+    casting = Casting(actor_id=actor_id, movie_id=movie_id,
+                      casting_date=casting_date, recast_yn=recast_yn)
+    casting.insert()
+    casting.apply()
+    casting.refresh()
+    return casting
 
 def decode_jwt(token):
     AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")

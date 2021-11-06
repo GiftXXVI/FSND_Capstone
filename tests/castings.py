@@ -1,14 +1,15 @@
 import os
 import json
+import random
 import unittest
-from datetime import date
+from datetime import date, datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
 from app import APP
-from models import setup_db, Actor
-from test_utilities import decode_jwt, prepare_genders, prepare_actors, generate_actor
+from models import setup_db, Casting
+from test_utilities import decode_jwt, prepare_genders, prepare_actors, prepare_movies, prepare_castings, generate_casting
 
 
-class TestActors(unittest.TestCase):
+class TestCastings(unittest.TestCase):
     def setUp(self):
         self.app = APP
         self.client = self.app.test_client
@@ -20,172 +21,186 @@ class TestActors(unittest.TestCase):
             self.db.init_app(self.app)
 
         # prepare the table, clear records, create seed record
+        self.seed_movie = prepare_movies()
         self.seed_gender = prepare_genders()
-        self.seed_id = prepare_actors(self.seed_gender)
-        self.post_actor = {"name": "Carrie Fisher",
-                           "dob": "1956-10-29T00:00:00.511Z", "gender_id": self.seed_gender}
+        self.seed_actor = prepare_actors(self.seed_gender)
+        self.seed_id = prepare_castings(self.seed_actor, self.seed_movie)
+        now = datetime.now()
+        self.post_casting = {"actor_id": self.seed_actor,
+                             "movie_id": self.seed_movie,
+                             "casting_date": json.dumps(now.isoformat()),
+                             "recast_yn": 0}
 
         self.token = os.getenv('TOKEN') if len(
             os.getenv('TOKEN')) > 0 else None
         self.token_detail = decode_jwt(self.token)
 
-    def test_get_actors(self):
+    def test_get_castings(self):
         token = self.token
         response = self.client().get(
-            '/actors', headers={"Authorization": f"Bearer {token}"})
+            '/castings', headers={"Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
 
         if token is None:
             self.assertEqual(response.status_code, 401)
             self.assertEqual(data['success'], False)
             self.assertEqual(data['message'], 'token not found.')
-            self.assertNotIn('actors', data.keys())
+            self.assertNotIn('castings', data.keys())
         else:
             if self.token_detail == 'expired':
                 self.assertEqual(response.status_code, 401)
                 self.assertEqual(data['success'], False)
-                self.assertNotIn('actors', data.keys())
+                self.assertNotIn('castings', data.keys())
             else:
                 permissions = self.token_detail['permissions']
-                permission = 'get:actors'
+                permission = 'get:castings'
                 if permission in permissions:
-                    print(f'\n has {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n has {permission}, return code: {response.status_code}')
                     # test response code
                     self.assertEqual(response.status_code, 200)
                     # test response body
                     self.assertEqual(data['success'], True)
-                    self.assertIn('actors', data.keys())
-                    self.assertGreaterEqual(len(data['actors']), 1)
+                    self.assertIn('castings', data.keys())
+                    self.assertGreaterEqual(len(data['castings']), 1)
                 else:
-                    print(f'\n no {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n no {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertEqual(data['success'], False)
-                    self.assertNotIn('actors', data.keys())
+                    self.assertNotIn('castings', data.keys())
 
-    def test_get_actor(self):
-        actor = Actor.query.filter(Actor.id == self.seed_id).one_or_none()
+    def test_get_casting(self):
+        casting = Casting.query.filter(
+            Casting.id == self.seed_id).one_or_none()
         token = self.token
         response = self.client().get(
-            f'/actors/{self.seed_id}', headers={"Authorization": f"Bearer {token}"})
+            f'/castings/{self.seed_id}', headers={"Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
             self.assertEqual(data['success'], False)
             self.assertEqual(data['message'], 'token not found.')
-            self.assertNotIn('actors', data.keys())
+            self.assertNotIn('castings', data.keys())
         else:
             if self.token_detail == 'expired':
                 self.assertEqual(response.status_code, 401)
-                self.assertNotIn('actors', data.keys())
+                self.assertNotIn('castings', data.keys())
                 self.assertEqual(data['success'], False)
             else:
-                if actor is None:
+                if casting is None:
                     self.assertEqual(response.status_code, 404)
-                    self.assertNotIn('actors', data.keys())
+                    self.assertNotIn('castings', data.keys())
                     self.assertEqual(data['success'], False)
                 else:
                     permissions = self.token_detail['permissions']
-                    permission = 'get:actors' 
+                    permission = 'get:castings'
                     if permission in permissions:
-                        print(f'\n has {permission}, return code: {response.status_code}')
+                        print(
+                            f'\n has {permission}, return code: {response.status_code}')
                         self.assertEqual(response.status_code, 200)
-                        self.assertIn('actors', data.keys())
+                        self.assertIn('castings', data.keys())
                         self.assertEqual(data['success'], True)
-                        self.assertEqual(len(data['actors']), 1)
+                        self.assertEqual(len(data['castings']), 1)
                     else:
-                        print(f'\n no {permission}, return code: {response.status_code}')
+                        print(
+                            f'\n no {permission}, return code: {response.status_code}')
                         self.assertEqual(response.status_code, 404)
-                        self.assertNotIn('actors', data.keys())
+                        self.assertNotIn('castings', data.keys())
                         self.assertEqual(data['success'], False)
 
-    def test_post_actor(self):
+    def test_post_casting(self):
         token = self.token
-        actor = self.post_actor
+        casting = self.post_casting
         response = self.client().post(
-            '/actors', headers={"Authorization": f"Bearer {token}"}, json=actor)
+            '/castings', headers={"Authorization": f"Bearer {token}"}, json=casting)
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
             self.assertEqual(data['success'], False)
             self.assertEqual(data['message'], 'token not found.')
-            self.assertNotIn('actors', data.keys())
+            self.assertNotIn('castings', data.keys())
         else:
             if self.token_detail == 'expired':
                 self.assertEqual(response.status_code, 401)
-                self.assertNotIn('actors', data.keys())
+                self.assertNotIn('castings', data.keys())
                 self.assertEqual(data['success'], False)
             else:
                 permissions = self.token_detail['permissions']
-                permission = 'post:actors' 
+                permission = 'post:castings'
                 if permission in permissions:
-                    print(f'\n has {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n has {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
-                    self.assertIn('actors', data.keys())
+                    self.assertIn('castings', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
-                    print(f'\n no {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n no {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
-                    self.assertNotIn('actors', data.keys())
+                    self.assertNotIn('castings', data.keys())
                     self.assertEqual(data['success'], False)
 
-    def test_patch_actor(self):
+    def test_patch_casting(self):
         token = self.token
-        actor = generate_actor(self.seed_gender)
-        actor.name = 'Humphrey Bogart'
-        actor.dob = date(1899, 12, 25)
+        casting = generate_casting(self.seed_actor, self.seed_movie)
+        casting.casting_date = date(1970, 1, 1) +\
+            timedelta(days=random.randint(25, 50)*365)
         response = self.client().patch(
-            f'/actors/{actor.id}', headers={"Authorization": f"Bearer {token}"}, json=actor.in_format())
+            f'/castings/{casting.id}', headers={"Authorization": f"Bearer {token}"}, json=casting.in_format())
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
             self.assertEqual(data['success'], False)
             self.assertEqual(data['message'], 'token not found.')
-            self.assertNotIn('actors', data.keys())
+            self.assertNotIn('castings', data.keys())
         else:
             if self.token_detail == 'expired':
                 self.assertEqual(response.status_code, 401)
-                self.assertNotIn('actors', data.keys())
+                self.assertNotIn('castings', data.keys())
                 self.assertEqual(data['success'], False)
             else:
                 permissions = self.token_detail['permissions']
-                permission = 'patch:actors' 
+                permission = 'patch:castings'
                 if permission in permissions:
-                    print(f'\n has {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n has {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
-                    self.assertIn('actors', data.keys())
+                    self.assertIn('castings', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
-                    print(f'\n no {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n no {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
-                    self.assertNotIn('actors', data.keys())
+                    self.assertNotIn('castings', data.keys())
                     self.assertEqual(data['success'], False)
 
-    def test_delete_actor(self):
+    def test_delete_casting(self):
         token = self.token
-        actor = generate_actor(self.seed_gender)
+        casting = generate_casting(self.seed_actor,self.seed_movie)
         response = self.client().delete(
-            f'/actors/{actor.id}', headers={"Authorization": f"Bearer {token}"})
+            f'/castings/{casting.id}', headers={"Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
             self.assertEqual(data['success'], False)
             self.assertEqual(data['message'], 'token not found.')
-            self.assertNotIn('actors', data.keys())
+            self.assertNotIn('castings', data.keys())
         else:
             if self.token_detail == 'expired':
                 self.assertEqual(response.status_code, 401)
-                self.assertNotIn('actors', data.keys())
+                self.assertNotIn('castings', data.keys())
                 self.assertEqual(data['success'], False)
             else:
                 permissions = self.token_detail['permissions']
-                permission = 'delete:actors'
+                permission = 'delete:castings'
                 if permission in permissions:
                     print(f'\n has {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
-                    self.assertIn('actors', data.keys())
+                    self.assertIn('castings', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
                     print(f'\n no {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
-                    self.assertNotIn('actors', data.keys())
+                    self.assertNotIn('castings', data.keys())
                     self.assertEqual(data['success'], False)
