@@ -66,6 +66,16 @@ def error_401(error):
         'message': message.lower()
     }), 401
 
+@APP.errorhandler(403)
+def error_403(error):
+    message = error.description if len(
+        error.description) > 0 else 'forbidden'
+    return jsonify({
+        'success': False,
+        'error': 403,
+        'message': message.lower()
+    }), 401
+
 
 @APP.errorhandler(405)
 def error_405(error):
