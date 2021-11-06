@@ -19,13 +19,12 @@ class TestMovies(unittest.TestCase):
             self.db.init_app(self.app)
 
         # prepare the table, clear records, create seed record
-        self.setup_success, self.seed_id = prepare_movies()
+        self.seed_id = prepare_movies()
         self.token = os.getenv('TOKEN') if len(
             os.getenv('TOKEN')) > 0 else None
         self.token_detail = decode_jwt(self.token)
         self.post_movie = {"title": "Blade Runner 2049",
                            "release_date": "2017-10-03T00:00:00.511Z"}
-        self.post_invalid_movie = {"title": ""}
 
     def tearDown(self):
         pass

@@ -16,7 +16,7 @@ def prepare_movies():
     seed_movie.refresh()
     id = seed_movie.id
     seed_movie.dispose()
-    return True, seed_movie.id
+    return id
 
 
 def prepare_genders():
@@ -27,7 +27,19 @@ def prepare_genders():
     seed_gender.refresh()
     id = seed_gender.id
     seed_gender.dispose()
-    return True, id
+    return id
+
+
+def prepare_actors(gender_id):
+    Actor.query.delete()
+    seed_actor = Actor(name="Ernest Borgnine",
+                       dob='1917-01-24', gender_id=gender_id)
+    seed_actor.insert()
+    seed_actor.apply()
+    seed_actor.refresh()
+    id = seed_actor.id
+    seed_actor.dispose()
+    return id
 
 
 def generate_movie():

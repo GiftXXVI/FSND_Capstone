@@ -19,7 +19,7 @@ class TestGenders(unittest.TestCase):
             self.db.init_app(self.app)
 
         # prepare the table, clear records, create seed record
-        self.setup_success, self.seed_id = prepare_genders()
+        self.seed_id = prepare_genders()
         self.post_gender = {"name": "Female"}
 
         self.token = os.getenv('TOKEN') if len(

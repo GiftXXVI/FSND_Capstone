@@ -32,7 +32,10 @@ def setup_db(app, test_mode=False):
 
 
 def get_db():
-    return db, migrate
+    return db
+
+def get_migrate():
+    return migrate
 
 
 class CastModel():

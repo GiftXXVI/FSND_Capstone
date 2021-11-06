@@ -7,7 +7,7 @@ from actors_blueprint import actors_blueprint
 from castings_blueprint import castings_blueprint
 from genders_blueprint import genders_blueprint
 from movies_blueprint import movies_blueprint
-from models import setup_db, get_db
+from models import get_migrate, setup_db, get_db
 import os
 
 db = SQLAlchemy()
@@ -27,7 +27,9 @@ def create_app(test_config=None):
         setup_db(app, test_mode=True)
     else:
         setup_db(app)
-    db, migrate = get_db()
+        db = get_db() 
+        migrate = get_migrate()
+    
     
     return app
 
