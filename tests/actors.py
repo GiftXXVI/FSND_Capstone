@@ -28,7 +28,7 @@ class TestActors(unittest.TestCase):
         self.token = os.getenv('TOKEN') if len(
             os.getenv('TOKEN')) > 0 else None
         self.token_detail = decode_jwt(self.token)
-    
+
     def test_get_actors(self):
         token = self.token
         response = self.client().get(

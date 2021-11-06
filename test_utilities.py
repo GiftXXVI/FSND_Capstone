@@ -20,6 +20,7 @@ def prepare_movies():
 
 
 def prepare_genders():
+    Actor.query.delete()
     Gender.query.delete()
     seed_gender = Gender(name="Male")
     seed_gender.insert()
