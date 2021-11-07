@@ -22,15 +22,14 @@ def create_app(test_config=None):
     app.register_blueprint(movies_blueprint)
     app.register_blueprint(genders_blueprint)
     app.register_blueprint(castings_blueprint)
-    CORS(app) 
-    if test_mode:
+    CORS(app)
+    if test_mode == 1:
         setup_db(app, test_mode=True)
     else:
         setup_db(app)
-        db = get_db() 
+        db = get_db()
         migrate = get_migrate()
-    
-    
+
     return app
 
 
@@ -65,6 +64,7 @@ def error_401(error):
         'error': 401,
         'message': message.lower()
     }), 401
+
 
 @APP.errorhandler(403)
 def error_403(error):

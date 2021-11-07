@@ -343,17 +343,18 @@ curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/genders
 
 ```json
 {
-  "genders": [
-    {
-      "id": 615,
-      "name": "Male"
-    },
-    {
-      "id": 616,
-      "name": "Female"
-    }
-  ],
-  "success": true
+   "genders":[
+      {
+         "id":1,
+         "name":"Male"
+      },
+      {
+         "id":2,
+         "name":"Female"
+      }
+   ],
+   "success":true
+}cess": true
 }
 ```
 
@@ -374,15 +375,15 @@ The endpoint responds with a boolean value of `true` with the index `success` an
 ###### Sample URL
 
 ```bash
- curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/genders/615
+  curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/genders/2
 ```
 
 ```json
 {
   "genders": [
     {
-      "id": 615,
-      "name": "Male"
+      "id": 2,
+      "name": "Female"
     }
   ],
   "success": true
@@ -406,16 +407,16 @@ The endpoint responds with a json object that contains the id of the created gen
 ###### Sample URL
 
 ```bash
-curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type:application/json" -d '{"name":"Unknown"}' http://127.0.0.1:5000/genders
+curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type:application/json" -d '{"name":"Prefer not to say."}' http://127.0.0.1:5000/genders
 ```
 
 ```json
 {
-  "created": 617,
+  "created": 4,
   "genders": [
     {
-      "id": 617,
-      "name": "Unknown"
+      "id": 4,
+      "name": "Prefer not to say."
     }
   ],
   "success": true
@@ -439,18 +440,18 @@ The endpoint responds with a json object that consists of the `id` of the modifi
 ###### Sample URL
 
 ```bash
-curl -X PATCH -H "Authorization: Bearer $TOKEN" -H "Content-Type:application/json" -d '{"name":"Prefer not to say"}' http://127.0.0.1:5000/genders/617
+curl -X PATCH -H "Authorization: Bearer $TOKEN" -H "Content-Type:application/json" -d '{"name":"UnKnown"}' http://127.0.0.1:5000/genders/4
 ```
 
 ```json
 {
   "genders": [
     {
-      "id": 617,
-      "name": "Prefer not to say"
+      "id": 4,
+      "name": "UnKnown"
     }
   ],
-  "modified": 617,
+  "modified": 4,
   "success": true
 }
 ```
@@ -472,13 +473,201 @@ The endpoint responds with a json object consisting of the `id` of the deleted g
 ###### Sample URL
 
 ```bash
- curl -X DELETE -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/genders/617
+  curl -X DELETE -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/genders/4
 ```
 
 ```json
 {
-  "deleted": 617,
+  "deleted": 4,
   "genders": [],
+  "success": true
+}
+```
+
+#### Actors
+
+##### GET /actors
+
+###### General
+
+This endpoint is used to retrieve a list of actors.
+
+###### Request Body
+
+The endpoint requires an empty request body.
+
+###### Response Body
+
+The endpoint responds with a list of actors under the index `actors` and a boolean value of `true` under the index `success` indicating that there were no errors while generating the response.
+
+###### Sample URL
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/actors
+```
+
+```json
+{
+  "actors": [
+    {
+      "age": 41,
+      "dob": "Fri, 28 Dec 1979 18:25:43 GMT",
+      "gender": "Female",
+      "id": 1,
+      "name": "Noomi Rapace"
+    },
+    {
+      "age": 66,
+      "dob": "Tue, 28 Dec 1954 18:25:43 GMT",
+      "gender": "Male",
+      "id": 2,
+      "name": "Denzel Washington"
+    },
+    {
+      "age": 46,
+      "dob": "Mon, 11 Nov 1974 18:25:43 GMT",
+      "gender": "Male",
+      "id": 3,
+      "name": "Leonardo DiCaprio"
+    }
+  ],
+  "success": true
+}
+```
+
+##### GET /actors/{int}
+
+###### General
+
+This endpoint is used to retrieve the details of a specific actor, identified by the `id` URL parameter.
+
+###### Request Body
+
+The endpoint requires an empty request body.
+
+###### Response Body
+
+The endpoint responds with a boolean value of `true` with the index `success` and a list consisting of the one actor whose `id` matches the `id` specified in the request URL parameter. The index of the list is `actors`.
+
+###### Sample URL
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/actors/1
+```
+
+```json
+{
+  "actors": [
+    {
+      "age": 41,
+      "dob": "Fri, 28 Dec 1979 18:25:43 GMT",
+      "gender": "Female",
+      "id": 1,
+      "name": "Noomi Rapace"
+    }
+  ],
+  "success": true
+}
+```
+
+##### POST /actors
+
+###### General
+
+This endpoint is used to create a new `actor`.
+
+###### Request Body
+
+The endpoint requires a `actor` json object with the attributes `name`, the date of birth `dob` and the gender `id` `gender_id`.
+
+###### Response Body
+
+The endpoint responds with a json object that contains the id of the created actor under the index `created`, a value of `true` under the index `success` to indicate that the operation was performed successfully, and a list indexed `actors` that contains a single `actor`; the `actor` that has just been created.
+
+###### Sample URL
+
+```bash
+curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type:application/json" -d '{"name":"Linda Hamilton", "dob":
+"1956-09-26T00:00:00.000Z","gender_id":"2"}' http://127.0.0.1:5000/actors
+```
+
+```json
+{
+  "actors": [
+    {
+      "age": 65,
+      "dob": "Wed, 26 Sep 1956 00:00:00 GMT",
+      "gender": "Female",
+      "id": 5,
+      "name": "Linda Hamilton"
+    }
+  ],
+  "created": 5,
+  "success": true
+}
+```
+
+##### PATCH /actors/{int}
+
+###### General
+
+This endpoint is used to modify the value of the attributes of an actor.
+
+###### Request Body
+
+The endpoint requires a json object consisting of the `name`, `dob` and `gender_id` attributes of an actor.
+
+###### Response Body
+
+The endpoint responds with a json object that consists of the `id` of the modified actor under the index `modified`, a boolean value of `true` under the index `success` indicating that no problems were encountered during the operation, and a list indexed `actors` that contains the details of the actor after the modification.
+
+###### Sample URL
+
+```bash
+curl -X PATCH -H "Authorization: Bearer $TOKEN" -H "Content-Type:application/json" -d '{"name":"Linda Carroll
+Hamilton", "dob":"1956-09-26T00:00:00.000Z","gender_id":"2"}' http://127.0.0.1:5000/actors/5
+```
+
+```json
+{
+  "actors": [
+    {
+      "age": 65,
+      "dob": "Wed, 26 Sep 1956 00:00:00 GMT",
+      "gender": "Female",
+      "id": 5,
+      "name": "Linda Carroll Hamilton"
+    }
+  ],
+  "modified": 5,
+  "success": true
+}
+```
+
+##### DELETE /actors/{int}
+
+###### General
+
+This endpoint is used to delete an actor.
+
+###### Request Body
+
+The endpoint requires an empty body.
+
+###### Respose Body
+
+The endpoint responds with a json object consisting of the `id` of the deleted actor under the index `actor`, a boolean value of `true` under the index `success` and an empty list indexed `actors`.
+
+###### Sample URL
+
+```bash
+curl -X DELETE -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/actors/6
+```
+
+```json
+{
+  "actors": [],
+  "deleted": 6,
   "success": true
 }
 ```
