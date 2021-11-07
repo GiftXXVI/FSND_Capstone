@@ -343,18 +343,17 @@ curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/genders
 
 ```json
 {
-   "genders":[
-      {
-         "id":1,
-         "name":"Male"
-      },
-      {
-         "id":2,
-         "name":"Female"
-      }
-   ],
-   "success":true
-}cess": true
+  "genders": [
+    {
+      "id": 1,
+      "name": "Male"
+    },
+    {
+      "id": 2,
+      "name": "Female"
+    }
+  ],
+  "success": true
 }
 ```
 
@@ -668,6 +667,185 @@ curl -X DELETE -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/actors/6
 {
   "actors": [],
   "deleted": 6,
+  "success": true
+}
+```
+
+#### Castings
+
+##### GET /castings
+
+###### General
+
+This endpoint is used to retrieve a list of castings.
+
+###### Request Body
+
+The endpoint requires an empty request body.
+
+###### Response Body
+
+The endpoint responds with a list of castings under the index `castings` and a boolean value of `true` under the index `success` indicating that there were no errors while generating the response.
+
+###### Sample URL
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/castings
+```
+
+```json
+{
+  "castings": [
+    {
+      "actor": "Noomi Rapace",
+      "casting_date": "Wed, 01 Aug 2012 18:25:43 GMT",
+      "id": 1,
+      "movie": "Alien:Covenant",
+      "recast_yn": "N"
+    },
+    {
+      "actor": "Denzel Washington",
+      "casting_date": "Mon, 02 Feb 2004 18:25:43 GMT",
+      "id": 8,
+      "movie": "Deja Vu",
+      "recast_yn": "N"
+    }
+  ],
+  "success": true
+}
+```
+
+##### GET /castings/{int}
+
+###### General
+
+This endpoint is used to retrieve the details of a specific casting, identified by the `id` URL parameter.
+
+###### Request Body
+
+The endpoint requires an empty request body.
+
+###### Response Body
+
+The endpoint responds with a boolean value of `true` with the index `success` and a list consisting of the one casting whose `id` matches the `id` specified in the request URL parameter. The index of the list is `castings`.
+
+###### Sample URL
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/castings/1
+```
+
+```json
+{
+  "castings": [
+    {
+      "actor": "Noomi Rapace",
+      "casting_date": "Wed, 01 Aug 2012 18:25:43 GMT",
+      "id": 1,
+      "movie": "Alien:Covenant",
+      "recast_yn": "N"
+    }
+  ],
+  "success": true
+}
+```
+
+##### POST /castings
+
+###### General
+
+This endpoint is used to create a new `casting`.
+
+###### Request Body
+
+The endpoint requires a `casting` json object with the attributes `actor_id`, `movie_id` and the casting date `casting_date`. There is also an optional parameter called `recast_yn` which takes on a default value of `false` if not specified in the request.
+
+###### Response Body
+
+The endpoint responds with a json object that contains the id of the created casting under the index `created`, a value of `true` under the index `success` to indicate that the operation was performed successfully, and a list indexed `castings` that contains a single item; the `casting` that has just been created.
+
+###### Sample URL
+
+```bash
+ curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type:application/json" -d '{"actor_id":"5","movie_id":"36","casting_date":"1990-05-10T00:00:00.000Z"}' http://127.0.0.1:5000/castings
+```
+
+```json
+{
+  "castings": [
+    {
+      "actor": "Linda Carroll Hamilton",
+      "casting_date": "Thu, 10 May 1990 00:00:00 GMT",
+      "id": 9,
+      "movie": "Terminator 2: Judgment Day",
+      "recast_yn": "N"
+    }
+  ],
+  "created": 9,
+  "success": true
+}
+```
+
+##### PATCH /castings/{int}
+
+###### General
+
+This endpoint is used to modify the value of the attributes of a casting.
+
+###### Request Body
+
+The endpoint requires a json object consisting of the `actor_id`, `movie_id` and `casting_date`. As in POST above, `recast_yn` is optional and defaults to the current value if a new value is not provided.
+
+###### Response Body
+
+The endpoint responds with a json object that consists of the `id` of the modified casting under the index `modified`, a boolean value of `true` under the index `success` indicating that no problems were encountered during the operation, and a single item list indexed `castings` that contains the details of the modified casting after the changes are applied.
+
+###### Sample URL
+
+```bash
+curl -X PATCH -H "Authorization: Bearer $TOKEN" -H "Content-Type:application/json" -d '{"actor_id":"5","movie_id":"36","casting_date":"1990-07-15T00:00:00.000Z"}' http://127.0.0.1:5000/castings/9
+```
+
+```json
+{
+  "castings": [
+    {
+      "actor": "Linda Carroll Hamilton",
+      "casting_date": "Sun, 15 Jul 1990 00:00:00 GMT",
+      "id": 9,
+      "movie": "Terminator 2: Judgment Day",
+      "recast_yn": "N"
+    }
+  ],
+  "modified": 9,
+  "success": true
+}
+```
+
+##### DELETE /castings/{int}
+
+###### General
+
+This endpoint is used to delete a casting.
+
+###### Request Body
+
+The endpoint requires an empty body.
+
+###### Respose Body
+
+The endpoint responds with a json object consisting of the `id` of the deleted casting under the index `casting`, a boolean value of `true` under the index `success` and an empty list indexed `castings`.
+
+###### Sample URL
+
+```bash
+curl -X DELETE -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/castings/10
+```
+
+```json
+{
+  "castings": [],
+  "deleted": 10,
   "success": true
 }
 ```

@@ -82,7 +82,7 @@ def modify(casting_id):
         movie_id = body.get('movie_id', None)
         casting_date = body.get('casting_date', None)
         recast_yn = body.get('recast_yn', None)
-        check = actor_id is None or movie_id is None or casting_date is None or recast_yn is None
+        check = actor_id is None or movie_id is None or casting_date is None
         if check:
             abort(400)
         else:
@@ -94,7 +94,8 @@ def modify(casting_id):
                 casting.actor_id = actor_id
                 casting.movie_id = movie_id
                 casting.casting_date = casting_date
-                casting.recast_yn = bool(recast_yn)
+                casting.recast_yn = bool(
+                    recast_yn) if recast_yn is not None else casting.recast_yn
                 try:
                     casting.apply()
                     format_castings = [casting.format()]
