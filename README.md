@@ -856,4 +856,16 @@ The application will be deployed to Heroku.
 
 ## Authors
 
+Most of the code was written by Gift Chimphonda. A lot of it was based on starter code from Udacity. And Stack Overflow helped when troubleshooting errors.
+ 
 ## Acknowledgements
+
+The following threads on Stack Overflow helped during key parts of the development process:
+
+[What is the right JSON Date Format?](https://stackoverflow.com/questions/10286204/what-is-the-right-json-date-format)
+
+[How to run unittest main for all source files in a subdirectory](https://stackoverflow.com/questions/644821/python-how-to-run-unittest-main-for-all-source-files-in-a-subdirectory)
+
+[datetime — Basic date and time types](https://docs.python.org/3/library/datetime.html)
+
+
