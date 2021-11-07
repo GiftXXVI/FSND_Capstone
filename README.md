@@ -99,9 +99,11 @@ Errors are returned in the following format:
   "message": "bad request"
 }
 ```
+
 Every error response contains a the HTTP status code under the index `error`, a boolean result `false` under the index `success` and a brief message describing the error under the index `message`.
 
 In the event of an error, the API may return one of the following HTTP status codes:
+
 - `404`: not found
 - `401`: unauthorized
 - `403`: forbidden
@@ -117,12 +119,15 @@ In the event of an error, the API may return one of the following HTTP status co
 ##### GET /movies
 
 ###### General
+
 This endpoint is used to retrieve a list of movies.
 
 ###### Request Body
+
 The endpoint requires an empty request body.
 
 ###### Response Body
+
 The endpoint responds with a list of movies under the index `movies` and a boolean value of `true` under the index `success` indicating that there were no errors generating the response.
 
 ###### Sample URL
@@ -229,7 +234,7 @@ The endpoint requires a `movie` json object with attributes `title` and `release
 
 ###### Response Body
 
-The endpoint responds with a json object that contains the id of the created movie under the index `created`, a value of `true` under the index `success` to indicate that the operation was performed successfully, and a list indexed `movies` that contains a single `movie`; the `movie` that has just been created. 
+The endpoint responds with a json object that contains the id of the created movie under the index `created`, a value of `true` under the index `success` to indicate that the operation was performed successfully, and a list indexed `movies` that contains a single `movie`; the `movie` that has just been created.
 
 ###### Sample URL
 
@@ -255,14 +260,19 @@ curl -X POST -H "Authorization: Bearer $TOKEN" -H 'Content-Type:application/json
 ##### PATCH /movies
 
 ###### General
+
 This endpoint is used to modify the values of the attributes of a movie.
 
 ###### Request Body
+
 The endpoint requires a json object consisting of the `title` and `release_date`. If one of the values is not being changed, the current value should be used.
 
 ###### Response Body
-The endpoint responds with a json object that consists of the `id` of the modified movie under the index `modified`, a booloean value of `true` under the index `success` indicating that no problems were encountered during the operation, and a list indexed `movies` that contains the details of the movie after the modification.
+
+The endpoint responds with a json object that consists of the `id` of the modified movie under the index `modified`, a boolean value of `true` under the index `success` indicating that no problems were encountered during the operation, and a list indexed `movies` that contains the details of the movie after the modification.
+
 ###### Sample URL
+
 ```bash
 curl -X PATCH -H "Authorization: Bearer $TOKEN" -H 'Content-Type:application/json' -d '{"title":"Terminator: Salvation","release_date":"2009-05-14T18:25:43.511Z"}'  http://127.0.0.1:5000/movies/24
 ```
@@ -282,12 +292,19 @@ curl -X PATCH -H "Authorization: Bearer $TOKEN" -H 'Content-Type:application/jso
 ```
 
 ##### DELETE /movies
+
 ###### General
+
 This endpoint is used to delete a movie.
+
 ###### Request Body
+
 The endpoint requires an empty body.
+
 ###### Respose Body
-The endpoint responds with a json object consisting of the `id` of the deleted movie under the index `movie`, a boolean value of `true` under the index `success` and an empty list indexed `movies`.  
+
+The endpoint responds with a json object consisting of the `id` of the deleted movie under the index `movie`, a boolean value of `true` under the index `success` and an empty list indexed `movies`.
+
 ###### Sample URL
 
 ```bash
@@ -295,7 +312,7 @@ curl -X DELETE -H "Authorization: Bearer $TOKEN"  http://127.0.0.1:5000/movies/2
 ```
 
 ```json
- {
+{
   "deleted": 24,
   "movies": [],
   "success": true
@@ -303,11 +320,169 @@ curl -X DELETE -H "Authorization: Bearer $TOKEN"  http://127.0.0.1:5000/movies/2
 ```
 
 #### Genders
+
 ##### GET /genders
+
+###### General
+
+This endpoint is used to retrieve a list of genders.
+
+###### Request Body
+
+The endpoint requires an empty request body.
+
+###### Response Body
+
+The endpoint responds with a list of genders under the index `genders` and a boolean value of `true` under the index `success` indicating that there were no errors while generating the response.
+
+###### Sample URL
+
+```bash
+curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/genders
+```
+
+```json
+{
+  "genders": [
+    {
+      "id": 615,
+      "name": "Male"
+    },
+    {
+      "id": 616,
+      "name": "Female"
+    }
+  ],
+  "success": true
+}
+```
+
 ##### GET /genders/{int}
+
+###### General
+
+This endpoint is used to retrieve the details of a specific gender, identified by the `id` URL parameter.
+
+###### Request Body
+
+The endpoint requires an empty request body.
+
+###### Response Body
+
+The endpoint responds with a boolean value of `true` with the index `success` and a list consisting of the one gender whose `id` matches the `id` specified in the request URL parameter. The index of the list is `genders`.
+
+###### Sample URL
+
+```bash
+ curl -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/genders/615
+```
+
+```json
+{
+  "genders": [
+    {
+      "id": 615,
+      "name": "Male"
+    }
+  ],
+  "success": true
+}
+```
+
 ##### POST /genders
+
+###### General
+
+This endpoint is used to create a new `gender`.
+
+###### Request Body
+
+The endpoint requires a `gender` json object with the single attribute `name`.
+
+###### Response Body
+
+The endpoint responds with a json object that contains the id of the created gender under the index `created`, a value of `true` under the index `success` to indicate that the operation was performed successfully, and a list indexed `genders` that contains a single `gender`; the `gender` that has just been created.
+
+###### Sample URL
+
+```bash
+curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type:application/json" -d '{"name":"Unknown"}' http://127.0.0.1:5000/genders
+```
+
+```json
+{
+  "created": 617,
+  "genders": [
+    {
+      "id": 617,
+      "name": "Unknown"
+    }
+  ],
+  "success": true
+}
+```
+
 ##### PATCH /genders/{int}
+
+###### General
+
+This endpoint is used to modify the value of the `name` attribute of a gender.
+
+###### Request Body
+
+The endpoint requires a json object consisting of the `name`.
+
+###### Response Body
+
+The endpoint responds with a json object that consists of the `id` of the modified gender under the index `modified`, a boolean value of `true` under the index `success` indicating that no problems were encountered during the operation, and a list indexed `genders` that contains the details of the gender after the modification.
+
+###### Sample URL
+
+```bash
+curl -X PATCH -H "Authorization: Bearer $TOKEN" -H "Content-Type:application/json" -d '{"name":"Prefer not to say"}' http://127.0.0.1:5000/genders/617
+```
+
+```json
+{
+  "genders": [
+    {
+      "id": 617,
+      "name": "Prefer not to say"
+    }
+  ],
+  "modified": 617,
+  "success": true
+}
+```
+
 ##### DELETE /genders/{int}
+
+###### General
+
+This endpoint is used to delete a gender.
+
+###### Request Body
+
+The endpoint requires an empty body.
+
+###### Respose Body
+
+The endpoint responds with a json object consisting of the `id` of the deleted gender under the index `gender`, a boolean value of `true` under the index `success` and an empty list indexed `genders`.
+
+###### Sample URL
+
+```bash
+ curl -X DELETE -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/genders/617
+```
+
+```json
+{
+  "deleted": 617,
+  "genders": [],
+  "success": true
+}
+```
+
 ## Deployment
 
 The application will be deployed to Heroku.
