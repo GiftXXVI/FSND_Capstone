@@ -68,7 +68,7 @@ Where:
 To start the application, run the following command:
 
 ```bash
-flask run
+gunicorn --bind 0.0.0.0:5000 app:APP
 ```
 
 You can then verify that the API is accessible by running the following curl command:
