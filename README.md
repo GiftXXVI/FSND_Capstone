@@ -197,7 +197,7 @@ The executive producer role has been granted the following permissions:
 <table>
 <thead>
 <tr>
-<td>Permission</td>
+<th>Permission</th>
 </tr>
 </thead>
 <tbody>
