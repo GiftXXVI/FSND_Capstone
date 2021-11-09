@@ -112,6 +112,51 @@ In the event of an error, the API may return one of the following HTTP status co
 - `400`: bad request
 - `500`: server error
 
+## User Roles and Permissions
+
+There are 3 user roles defined in Auth0:
+1. Casting Assistant
+    The casting assitant role has been granted the following permissions:
+        - get:actors
+        - get:castings
+        - patch:castings
+        - post:castings
+        - get:movies
+2. Casting Director
+    The casting director role has been granted the following permissions:
+        - get:actors
+        - post:actors
+        - patch:actors
+        - delete:actors
+        - get:castings
+        - post:castings
+        - patch:castings
+        - delete:castings
+        - get:genders
+        - post:genders
+        - patch:genders
+        - delete:genders
+        - get:movies
+3. Executive Producer
+    The executive producer role has been granted the following permissions:
+        - get:actors
+        - post:actors
+        - patch:actors
+        - delete:actors
+        - get:castings
+        - post:castings
+        - patch:castings
+        - delete:castings
+        - get:genders
+        - post:genders
+        - patch:genders
+        - delete:genders
+        - get:movies
+        - post:movies
+        - patch:movies
+        - delete:movies
+  
+
 ### Resource Endpoint Library
 
 #### Movies
