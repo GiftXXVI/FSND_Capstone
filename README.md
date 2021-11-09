@@ -852,12 +852,45 @@ curl -X DELETE -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/castings/
 
 ## Deployment
 
-The application will be deployed to Heroku.
+The application has been deployed to Heroku. The base url of the application on Heroku is: [Heroku Base URL](http://giftxxvi-capstone.herokuapp.com). Here are some sample requests and responses from running API calls against the app on Heroku:
+
+### GET /castings
+
+```bash
+curl -X GET -H "Authorization: Bearer $TOKEN" http://giftxxvi-capstone.herokuapp.com/castings
+```
+
+```json
+{"castings":[{"actor":"Leonardo DiCaprio","casting_date":"Thu, 01 Jan 2015 00:00:00 GMT","id":4,"movie":"The Revenant","recast_yn":"N"}],"created":4,"success":true}
+```
+
+### POST /castings
+
+```bash
+curl -X POST -H "Authorization: Bearer $TOKEN" -H "Content-Type:application/json" -d '{"actor_id":"2", "movie_
+id":"8", "casting_date":"2015-01-01"}' http://giftxxvi-capstone.herokuapp.com/castings
+```
+
+```json
+{
+  "castings": [
+    {
+      "actor": "Leonardo DiCaprio",
+      "casting_date": "Thu, 01 Jan 2015 00:00:00 GMT",
+      "id": 4,
+      "movie": "The Revenant",
+      "recast_yn": "N"
+    }
+  ],
+  "created": 4,
+  "success": true
+}
+```
 
 ## Authors
 
 Most of the code was written by Gift Chimphonda. A lot of it was based on starter code from Udacity. And Stack Overflow helped when troubleshooting errors.
- 
+
 ## Acknowledgements
 
 The following threads on Stack Overflow helped during key parts of the development process:
@@ -867,5 +900,3 @@ The following threads on Stack Overflow helped during key parts of the developme
 [How to run unittest main for all source files in a subdirectory](https://stackoverflow.com/questions/644821/python-how-to-run-unittest-main-for-all-source-files-in-a-subdirectory)
 
 [datetime — Basic date and time types](https://docs.python.org/3/library/datetime.html)
-
-
