@@ -49,7 +49,8 @@ class TestActors(unittest.TestCase):
                 permissions = self.token_detail['permissions']
                 permission = 'get:actors'
                 if permission in permissions:
-                    print(f'\n has {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n has {permission}, return code: {response.status_code}')
                     # test response code
                     self.assertEqual(response.status_code, 200)
                     # test response body
@@ -57,7 +58,8 @@ class TestActors(unittest.TestCase):
                     self.assertIn('actors', data.keys())
                     self.assertGreaterEqual(len(data['actors']), 1)
                 else:
-                    print(f'\n no {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n no {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertEqual(data['success'], False)
                     self.assertNotIn('actors', data.keys())
@@ -85,15 +87,17 @@ class TestActors(unittest.TestCase):
                     self.assertEqual(data['success'], False)
                 else:
                     permissions = self.token_detail['permissions']
-                    permission = 'get:actors' 
+                    permission = 'get:actors'
                     if permission in permissions:
-                        print(f'\n has {permission}, return code: {response.status_code}')
+                        print(
+                            f'\n has {permission}, return code: {response.status_code}')
                         self.assertEqual(response.status_code, 200)
                         self.assertIn('actors', data.keys())
                         self.assertEqual(data['success'], True)
                         self.assertEqual(len(data['actors']), 1)
                     else:
-                        print(f'\n no {permission}, return code: {response.status_code}')
+                        print(
+                            f'\n no {permission}, return code: {response.status_code}')
                         self.assertEqual(response.status_code, 404)
                         self.assertNotIn('actors', data.keys())
                         self.assertEqual(data['success'], False)
@@ -116,14 +120,16 @@ class TestActors(unittest.TestCase):
                 self.assertEqual(data['success'], False)
             else:
                 permissions = self.token_detail['permissions']
-                permission = 'post:actors' 
+                permission = 'post:actors'
                 if permission in permissions:
-                    print(f'\n has {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n has {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('actors', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
-                    print(f'\n no {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n no {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('actors', data.keys())
                     self.assertEqual(data['success'], False)
@@ -148,14 +154,16 @@ class TestActors(unittest.TestCase):
                 self.assertEqual(data['success'], False)
             else:
                 permissions = self.token_detail['permissions']
-                permission = 'patch:actors' 
+                permission = 'patch:actors'
                 if permission in permissions:
-                    print(f'\n has {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n has {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('actors', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
-                    print(f'\n no {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n no {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('actors', data.keys())
                     self.assertEqual(data['success'], False)
@@ -180,12 +188,14 @@ class TestActors(unittest.TestCase):
                 permissions = self.token_detail['permissions']
                 permission = 'delete:actors'
                 if permission in permissions:
-                    print(f'\n has {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n has {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('actors', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
-                    print(f'\n no {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n no {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('actors', data.keys())
                     self.assertEqual(data['success'], False)

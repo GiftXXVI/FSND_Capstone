@@ -101,6 +101,7 @@ def generate_casting(actor_id, movie_id):
     casting.refresh()
     return casting
 
+
 def decode_jwt(token):
     AUTH0_DOMAIN = os.getenv("AUTH0_DOMAIN")
     API_AUDIENCE = os.getenv("API_AUDIENCE")

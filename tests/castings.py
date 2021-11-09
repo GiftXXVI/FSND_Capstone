@@ -177,7 +177,7 @@ class TestCastings(unittest.TestCase):
 
     def test_delete_casting(self):
         token = self.token
-        casting = generate_casting(self.seed_actor,self.seed_movie)
+        casting = generate_casting(self.seed_actor, self.seed_movie)
         response = self.client().delete(
             f'/castings/{casting.id}', headers={"Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
@@ -195,12 +195,14 @@ class TestCastings(unittest.TestCase):
                 permissions = self.token_detail['permissions']
                 permission = 'delete:castings'
                 if permission in permissions:
-                    print(f'\n has {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n has {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('castings', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
-                    print(f'\n no {permission}, return code: {response.status_code}')
+                    print(
+                        f'\n no {permission}, return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('castings', data.keys())
                     self.assertEqual(data['success'], False)
