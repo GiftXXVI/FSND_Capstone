@@ -115,47 +115,142 @@ In the event of an error, the API may return one of the following HTTP status co
 ## User Roles and Permissions
 
 There are 3 user roles defined in Auth0:
+
 1. Casting Assistant
-    The casting assitant role has been granted the following permissions:
-        - get:actors
-        - get:castings
-        - patch:castings
-        - post:castings
-        - get:movies
+The casting assitant role has been granted the following permissions:
+<table>
+<thead>
+<tr>
+    <th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td>get:actors</td>
+</tr>
+<tr>
+    <td>get:castings</td>
+</tr>
+<tr>
+    <td>patch:castings</td>
+</tr>
+<tr>
+    <td>post:castings</td>
+</tr>
+<tr>
+    <td>get:movies</td>
+</tr>
+</tbody>
+</table>
 2. Casting Director
-    The casting director role has been granted the following permissions:
-        - get:actors
-        - post:actors
-        - patch:actors
-        - delete:actors
-        - get:castings
-        - post:castings
-        - patch:castings
-        - delete:castings
-        - get:genders
-        - post:genders
-        - patch:genders
-        - delete:genders
-        - get:movies
+The casting director role has been granted the following permissions:
+<table>
+<thead>
+<tr>
+<th>Permission</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>get:actors</td>
+</tr>
+<tr>
+<td>post:actors</td>
+</tr>
+<tr>
+<td>patch:actors</td>
+</tr>
+<tr>
+<td>delete:actors</td>
+</tr>
+<tr>
+<td>get:castings</td>
+</tr>
+<tr>
+<td>post:castings</td>
+</tr>
+<tr>
+<td>patch:castings</td>
+</tr>
+<tr>
+<td>delete:castings</td>
+</tr>
+<tr>
+<td>get:genders</td>
+</tr>
+<tr>
+<td>post:genders</td>
+</tr>
+<tr>
+<td>patch:genders</td>
+</tr>
+<tr>
+<td>delete:genders</td>
+</tr>
+<tr>
+<td>get:movies</td>
+</tr>
+</tbody>
+</table>
 3. Executive Producer
-    The executive producer role has been granted the following permissions:
-        - get:actors
-        - post:actors
-        - patch:actors
-        - delete:actors
-        - get:castings
-        - post:castings
-        - patch:castings
-        - delete:castings
-        - get:genders
-        - post:genders
-        - patch:genders
-        - delete:genders
-        - get:movies
-        - post:movies
-        - patch:movies
-        - delete:movies
-  
+The executive producer role has been granted the following permissions:
+<table>
+<thead>
+<tr>
+<td>Permission</td>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>get:actors</td>
+</tr>
+<tr>
+<td>post:actors</td>
+</tr>
+<tr>
+<td>patch:actors</td>
+</tr>
+<tr>
+<td>delete:actors</td>
+</tr>
+<tr>
+<td>get:castings</td>
+</tr>
+<tr>
+<td>post:castings</td>
+</tr>
+<tr>
+<td>patch:castings</td>
+</tr>
+<tr>
+<td>delete:castings</td>
+</tr>
+<tr>
+<td>get:genders</td>
+</tr>
+<tr>
+<td>post:genders</td>
+</tr>
+<tr>
+<td>patch:genders</td>
+</tr>
+<tr>
+<td>delete:genders</td>
+</tr>
+<tr>
+<td>get:movies</td>
+</tr>
+<tr>
+<td>post:movies</td>
+</tr>
+<tr>
+<td>patch:movies</td>
+</tr>
+<tr>
+<td>delete:movies</td>
+</tr>
+</tbody>
+</table>
 
 ### Resource Endpoint Library
 
@@ -907,37 +1002,37 @@ curl -X GET -H "Authorization: Bearer $TOKEN" http://giftxxvi-capstone.herokuapp
 
 ```json
 {
-   "castings":[
-      {
-         "actor":"Noomi Rapace",
-         "casting_date":"Thu, 01 Jan 2009 00:00:00 GMT",
-         "id":1,
-         "movie":"The Girl with the Dragon Tattoo",
-         "recast_yn":"N"
-      },
-      {
-         "actor":"Kenneth Branagh",
-         "casting_date":"Sun, 01 Jan 2017 00:00:00 GMT",
-         "id":2,
-         "movie":"Murder on the Orient Express",
-         "recast_yn":"N"
-      },
-      {
-         "actor":"Tom Hardy",
-         "casting_date":"Sun, 01 Jan 2012 00:00:00 GMT",
-         "id":3,
-         "movie":"The Dark Knight Rises",
-         "recast_yn":"N"
-      },
-      {
-         "actor":"Leonardo DiCaprio",
-         "casting_date":"Thu, 01 Jan 2015 00:00:00 GMT",
-         "id":4,
-         "movie":"The Revenant",
-         "recast_yn":"N"
-      }
-   ],
-   "success":true
+  "castings": [
+    {
+      "actor": "Noomi Rapace",
+      "casting_date": "Thu, 01 Jan 2009 00:00:00 GMT",
+      "id": 1,
+      "movie": "The Girl with the Dragon Tattoo",
+      "recast_yn": "N"
+    },
+    {
+      "actor": "Kenneth Branagh",
+      "casting_date": "Sun, 01 Jan 2017 00:00:00 GMT",
+      "id": 2,
+      "movie": "Murder on the Orient Express",
+      "recast_yn": "N"
+    },
+    {
+      "actor": "Tom Hardy",
+      "casting_date": "Sun, 01 Jan 2012 00:00:00 GMT",
+      "id": 3,
+      "movie": "The Dark Knight Rises",
+      "recast_yn": "N"
+    },
+    {
+      "actor": "Leonardo DiCaprio",
+      "casting_date": "Thu, 01 Jan 2015 00:00:00 GMT",
+      "id": 4,
+      "movie": "The Revenant",
+      "recast_yn": "N"
+    }
+  ],
+  "success": true
 }
 ```
 
