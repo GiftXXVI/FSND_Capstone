@@ -995,6 +995,63 @@ curl -X DELETE -H "Authorization: Bearer $TOKEN" http://127.0.0.1:5000/castings/
 
 ## Deployment
 
+### Brief Deployment Procedure
+
+Step 1: create a Heroku Application using the following command:
+
+```bash
+heroku create giftxxvi-capstone
+```
+Step 2: create postgresql database using the following command:
+
+```bash
+heroku addons:create heroku-postgresql:hobby-dev
+```
+Step 3: set environment variables in the heroku console
+
+Step 4: initialize git heroku remote in your code directory using the following command:
+
+```bash
+git remote add heroku giftxxvi-capstone
+```
+
+Step 5: push the latest commit to the heroku remote repo using the command below:
+
+```bash
+git commit -a -m "heroku_deployment"
+```
+followed by:
+```bash
+git push heroku master
+```
+Step 6: run the latest migrations on the heroku database:
+
+```bash
+heroku run flask db upgrade
+``` 
+Step 7:
+
+test the application using the command below (replacing the base url with your base url):
+```bash
+curl -H "Authorization: Bearer $TOKEN" http://giftxxvi-capstone.herokuapp.com/genders
+```
+```json
+{
+  "genders": [
+    {
+      "id": 1,
+      "name": "Male"
+    },
+    {
+      "id": 2,
+      "name": "Female"
+    }
+  ],
+  "success": true
+}
+```
+### Deployment Status
+
 The application has been deployed to Heroku. The base url of the application on Heroku is: [Heroku Base URL](http://giftxxvi-capstone.herokuapp.com). Here are some sample requests and responses from running API calls against the app on Heroku:
 
 ### GET /castings
@@ -1073,5 +1130,7 @@ The following threads on Stack Overflow helped during key parts of the developme
 [What is the right JSON Date Format?](https://stackoverflow.com/questions/10286204/what-is-the-right-json-date-format)
 
 [How to run unittest main for all source files in a subdirectory](https://stackoverflow.com/questions/644821/python-how-to-run-unittest-main-for-all-source-files-in-a-subdirectory)
+
+As did the following Python documentation page:
 
 [datetime — Basic date and time types](https://docs.python.org/3/library/datetime.html)
