@@ -861,7 +861,19 @@ curl -X GET -H "Authorization: Bearer $TOKEN" http://giftxxvi-capstone.herokuapp
 ```
 
 ```json
-{"castings":[{"actor":"Leonardo DiCaprio","casting_date":"Thu, 01 Jan 2015 00:00:00 GMT","id":4,"movie":"The Revenant","recast_yn":"N"}],"created":4,"success":true}
+{
+   "castings":[
+      {
+         "actor":"Leonardo DiCaprio",
+         "casting_date":"Thu, 01 Jan 2015 00:00:00 GMT",
+         "id":4,
+         "movie":"The Revenant",
+         "recast_yn":"N"
+      }
+   ],
+   "created":4,
+   "success":true
+}
 ```
 
 ### POST /castings
