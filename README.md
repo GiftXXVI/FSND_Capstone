@@ -864,6 +864,27 @@ curl -X GET -H "Authorization: Bearer $TOKEN" http://giftxxvi-capstone.herokuapp
 {
    "castings":[
       {
+         "actor":"Noomi Rapace",
+         "casting_date":"Thu, 01 Jan 2009 00:00:00 GMT",
+         "id":1,
+         "movie":"The Girl with the Dragon Tattoo",
+         "recast_yn":"N"
+      },
+      {
+         "actor":"Kenneth Branagh",
+         "casting_date":"Sun, 01 Jan 2017 00:00:00 GMT",
+         "id":2,
+         "movie":"Murder on the Orient Express",
+         "recast_yn":"N"
+      },
+      {
+         "actor":"Tom Hardy",
+         "casting_date":"Sun, 01 Jan 2012 00:00:00 GMT",
+         "id":3,
+         "movie":"The Dark Knight Rises",
+         "recast_yn":"N"
+      },
+      {
          "actor":"Leonardo DiCaprio",
          "casting_date":"Thu, 01 Jan 2015 00:00:00 GMT",
          "id":4,
@@ -871,7 +892,6 @@ curl -X GET -H "Authorization: Bearer $TOKEN" http://giftxxvi-capstone.herokuapp
          "recast_yn":"N"
       }
    ],
-   "created":4,
    "success":true
 }
 ```
