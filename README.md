@@ -118,6 +118,7 @@ There are 3 user roles defined in Auth0:
 
 1. Casting Assistant
 The casting assitant role has been granted the following permissions:
+<br/>
 <table>
 <thead>
 <tr>
@@ -144,7 +145,7 @@ The casting assitant role has been granted the following permissions:
 </table>
 2. Casting Director
 The casting director role has been granted the following permissions:
-
+<br/>
 <table>
 <thead>
 <tr>
@@ -195,7 +196,7 @@ The casting director role has been granted the following permissions:
 </table>
 3. Executive Producer
 The executive producer role has been granted the following permissions:
-
+<br/>
 <table>
 <thead>
 <tr>
