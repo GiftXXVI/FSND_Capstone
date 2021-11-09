@@ -110,6 +110,8 @@ ENV/
 env.bak/
 venv.bak/
 local*.sh
+remote*.sh
+ELETE
 
 # Spyder project settings
 .spyderproject
