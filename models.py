@@ -28,7 +28,7 @@ def setup_db(app, test_mode=False):
         else:
             db_path = db_url
     else:
-        db_path = live_db_url
+        db_path = live_db_url.replace('postgres','postgresql')
     app.config["SQLALCHEMY_DATABASE_URI"] = db_path
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
     db.app = app
