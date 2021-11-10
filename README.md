@@ -23,6 +23,16 @@ Install all dependencies by running the following command from the root director
 pip install -r requirements.txt
 ```
 
+### Tech Stack/Tools
+
+The project has been developed using the following tech stack:
+- Python 3.8.10
+- PostgreSQL 12
+
+The versions of all libraries can be found in the file requirements.txt
+
+The code was written in Visual Studio Code 1.62.0 on Windows 10 WSL inside Ubuntu 20.04.3 LTS.
+
 ### Databases
 
 The API depends on the presence of a postgresql database, whose name should be properly configured in the `DATABASE_NAME` environment variable.
