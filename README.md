@@ -1002,27 +1002,26 @@ Step 1: create a Heroku Application using the following command:
 ```bash
 heroku create giftxxvi-capstone
 ```
-Step 2: create postgresql database using the following command:
+Step 2: initialize git heroku remote in your code directory using the following command:
 
 ```bash
-heroku addons:create heroku-postgresql:hobby-dev
+git remote add heroku https://git.heroku.com/giftxxvi-capstone.git
 ```
 Step 3: set environment variables in the heroku console
 
-Step 4: initialize git heroku remote in your code directory using the following command:
+Step 4: create postgresql database using the following command:
 
 ```bash
-git remote add heroku giftxxvi-capstone
+heroku addons:create heroku-postgresql:hobby-dev --app giftxxvi-capstone
 ```
-
-Step 5: push the latest commit to the heroku remote repo using the command below:
+Step 5: push the latest commit to the heroku remote using the command below:
 
 ```bash
 git commit -a -m "heroku_deployment"
 ```
 followed by:
 ```bash
-git push heroku master
+git push heroku
 ```
 Step 6: run the latest migrations on the heroku database:
 
