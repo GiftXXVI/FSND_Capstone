@@ -1019,6 +1019,18 @@ git remote add heroku https://git.heroku.com/giftxxvi-capstone.git
 ```
 Step 3: set environment variables in the heroku console
 
+Inside the heroku web console, open the application, navigate to Settings and click on "Reveal Config Vars".
+
+Under Config Vars, define the following variables (decriptions are provided under [Installation](#Installation)):
+
+`AUTH0_CLIENTID`
+
+`AUTH0_DOMAIN`
+
+`DATABASE_URL`
+
+`TEST_MODE`
+
 Step 4: create postgresql database using the following command:
 
 ```bash
