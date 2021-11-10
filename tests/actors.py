@@ -5,7 +5,8 @@ from datetime import date
 from flask_sqlalchemy import SQLAlchemy
 from app import APP
 from models import setup_db, Actor
-from test_utilities import decode_jwt, prepare_genders, prepare_actors, generate_actor
+from test_utilities import decode_jwt, prepare_genders
+from test_utilities import prepare_actors, generate_actor
 
 
 class TestActors(unittest.TestCase):
@@ -22,8 +23,10 @@ class TestActors(unittest.TestCase):
         # prepare the table, clear records, create seed record
         self.seed_gender = prepare_genders()
         self.seed_id = prepare_actors(self.seed_gender)
-        self.post_actor = {"name": "Carrie Fisher",
-                           "dob": "1956-10-29T00:00:00.511Z", "gender_id": self.seed_gender}
+        self.post_actor = {
+            "name": "Carrie Fisher",
+            "dob": "1956-10-29T00:00:00.511Z",
+            "gender_id": self.seed_gender}
 
         self.token = os.getenv('TOKEN') if len(
             os.getenv('TOKEN')) > 0 else None
@@ -50,7 +53,8 @@ class TestActors(unittest.TestCase):
                 permission = 'get:actors'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     # test response code
                     self.assertEqual(response.status_code, 200)
                     # test response body
@@ -59,7 +63,8 @@ class TestActors(unittest.TestCase):
                     self.assertGreaterEqual(len(data['actors']), 1)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertEqual(data['success'], False)
                     self.assertNotIn('actors', data.keys())
@@ -68,7 +73,9 @@ class TestActors(unittest.TestCase):
         actor = Actor.query.filter(Actor.id == self.seed_id).one_or_none()
         token = self.token
         response = self.client().get(
-            f'/actors/{self.seed_id}', headers={"Authorization": f"Bearer {token}"})
+            f'/actors/{self.seed_id}',
+            headers={
+                "Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -90,14 +97,16 @@ class TestActors(unittest.TestCase):
                     permission = 'get:actors'
                     if permission in permissions:
                         print(
-                            f'\n has {permission}, return code: {response.status_code}')
+                            f'\n has {permission},',
+                            f'return code: {response.status_code}')
                         self.assertEqual(response.status_code, 200)
                         self.assertIn('actors', data.keys())
                         self.assertEqual(data['success'], True)
                         self.assertEqual(len(data['actors']), 1)
                     else:
                         print(
-                            f'\n no {permission}, return code: {response.status_code}')
+                            f'\n no {permission},',
+                            f'return code: {response.status_code}')
                         self.assertEqual(response.status_code, 404)
                         self.assertNotIn('actors', data.keys())
                         self.assertEqual(data['success'], False)
@@ -106,7 +115,10 @@ class TestActors(unittest.TestCase):
         token = self.token
         actor = self.post_actor
         response = self.client().post(
-            '/actors', headers={"Authorization": f"Bearer {token}"}, json=actor)
+            '/actors',
+            headers={
+                "Authorization": f"Bearer {token}"},
+            json=actor)
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -123,13 +135,15 @@ class TestActors(unittest.TestCase):
                 permission = 'post:actors'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('actors', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('actors', data.keys())
                     self.assertEqual(data['success'], False)
@@ -140,7 +154,10 @@ class TestActors(unittest.TestCase):
         actor.name = 'Humphrey Bogart'
         actor.dob = date(1899, 12, 25)
         response = self.client().patch(
-            f'/actors/{actor.id}', headers={"Authorization": f"Bearer {token}"}, json=actor.in_format())
+            f'/actors/{actor.id}',
+            headers={
+                "Authorization": f"Bearer {token}"},
+            json=actor.in_format())
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -157,13 +174,15 @@ class TestActors(unittest.TestCase):
                 permission = 'patch:actors'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('actors', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('actors', data.keys())
                     self.assertEqual(data['success'], False)
@@ -172,7 +191,9 @@ class TestActors(unittest.TestCase):
         token = self.token
         actor = generate_actor(self.seed_gender)
         response = self.client().delete(
-            f'/actors/{actor.id}', headers={"Authorization": f"Bearer {token}"})
+            f'/actors/{actor.id}',
+            headers={
+                "Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -189,13 +210,15 @@ class TestActors(unittest.TestCase):
                 permission = 'delete:actors'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('actors', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('actors', data.keys())
                     self.assertEqual(data['success'], False)

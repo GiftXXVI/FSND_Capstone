@@ -6,7 +6,9 @@ from datetime import date, datetime, timedelta
 from flask_sqlalchemy import SQLAlchemy
 from app import APP
 from models import setup_db, Casting
-from test_utilities import decode_jwt, prepare_genders, prepare_actors, prepare_movies, prepare_castings, generate_casting
+from test_utilities import decode_jwt, prepare_genders
+from test_utilities import prepare_actors, prepare_movies
+from test_utilities import prepare_castings, generate_casting
 
 
 class TestCastings(unittest.TestCase):
@@ -56,7 +58,8 @@ class TestCastings(unittest.TestCase):
                 permission = 'get:castings'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     # test response code
                     self.assertEqual(response.status_code, 200)
                     # test response body
@@ -65,7 +68,8 @@ class TestCastings(unittest.TestCase):
                     self.assertGreaterEqual(len(data['castings']), 1)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertEqual(data['success'], False)
                     self.assertNotIn('castings', data.keys())
@@ -75,7 +79,9 @@ class TestCastings(unittest.TestCase):
             Casting.id == self.seed_id).one_or_none()
         token = self.token
         response = self.client().get(
-            f'/castings/{self.seed_id}', headers={"Authorization": f"Bearer {token}"})
+            f'/castings/{self.seed_id}',
+            headers={
+                "Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -97,14 +103,16 @@ class TestCastings(unittest.TestCase):
                     permission = 'get:castings'
                     if permission in permissions:
                         print(
-                            f'\n has {permission}, return code: {response.status_code}')
+                            f'\n has {permission},',
+                            f'return code: {response.status_code}')
                         self.assertEqual(response.status_code, 200)
                         self.assertIn('castings', data.keys())
                         self.assertEqual(data['success'], True)
                         self.assertEqual(len(data['castings']), 1)
                     else:
                         print(
-                            f'\n no {permission}, return code: {response.status_code}')
+                            f'\n no {permission},',
+                            f'return code: {response.status_code}')
                         self.assertEqual(response.status_code, 404)
                         self.assertNotIn('castings', data.keys())
                         self.assertEqual(data['success'], False)
@@ -113,7 +121,10 @@ class TestCastings(unittest.TestCase):
         token = self.token
         casting = self.post_casting
         response = self.client().post(
-            '/castings', headers={"Authorization": f"Bearer {token}"}, json=casting)
+            '/castings',
+            headers={
+                "Authorization": f"Bearer {token}"},
+            json=casting)
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -130,13 +141,15 @@ class TestCastings(unittest.TestCase):
                 permission = 'post:castings'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('castings', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('castings', data.keys())
                     self.assertEqual(data['success'], False)
@@ -145,9 +158,12 @@ class TestCastings(unittest.TestCase):
         token = self.token
         casting = generate_casting(self.seed_actor, self.seed_movie)
         casting.casting_date = date(1970, 1, 1) +\
-            timedelta(days=random.randint(25, 50)*365)
+            timedelta(days=random.randint(25, 50) * 365)
         response = self.client().patch(
-            f'/castings/{casting.id}', headers={"Authorization": f"Bearer {token}"}, json=casting.in_format())
+            f'/castings/{casting.id}',
+            headers={
+                "Authorization": f"Bearer {token}"},
+            json=casting.in_format())
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -164,13 +180,15 @@ class TestCastings(unittest.TestCase):
                 permission = 'patch:castings'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('castings', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('castings', data.keys())
                     self.assertEqual(data['success'], False)
@@ -179,7 +197,9 @@ class TestCastings(unittest.TestCase):
         token = self.token
         casting = generate_casting(self.seed_actor, self.seed_movie)
         response = self.client().delete(
-            f'/castings/{casting.id}', headers={"Authorization": f"Bearer {token}"})
+            f'/castings/{casting.id}',
+            headers={
+                "Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -196,13 +216,15 @@ class TestCastings(unittest.TestCase):
                 permission = 'delete:castings'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('castings', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('castings', data.keys())
                     self.assertEqual(data['success'], False)

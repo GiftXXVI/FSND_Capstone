@@ -156,7 +156,12 @@ class Casting(db.Model, CastModel):
     db.UniqueConstraint(actor_id, movie_id, casting_date,
                         name='UX_actor_movie_date')
 
-    def __init__(self, actor_id, movie_id, casting_date, recast_yn=False) -> None:
+    def __init__(
+            self,
+            actor_id,
+            movie_id,
+            casting_date,
+            recast_yn=False) -> None:
         super().__init__()
         self.actor_id = actor_id
         self.movie_id = movie_id

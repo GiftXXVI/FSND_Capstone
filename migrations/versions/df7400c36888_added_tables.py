@@ -42,7 +42,8 @@ def upgrade():
                     sa.ForeignKeyConstraint(['movie_id'], ['movie.id'], ),
                     sa.PrimaryKeyConstraint('id'),
                     sa.UniqueConstraint('actor_id', 'movie_id',
-                                        'casting_date', name='UX_actor_movie_date')
+                                        'casting_date',
+                                        name='UX_actor_movie_date')
                     )
     # ### end Alembic commands ###
 

@@ -34,7 +34,7 @@ def get_casting(casting_id):
 @castings_blueprint.route('/castings', methods=['POST'])
 @requires_auth(permission='post:castings')
 def create_casting():
-    success = True
+    success = False
     body = request.get_json()
     if body is None:
         abort(400)
@@ -54,25 +54,25 @@ def create_casting():
                 casting.apply()
                 casting.refresh()
                 format_castings = [casting.format()]
-            except:
-                casting.rollback()
-                success = False
+                success = True
             finally:
-                casting.dispose()
                 if success:
+                    casting.dispose()
                     return jsonify({
                         'success': success,
                         'created': casting.id,
                         'castings': format_castings
                     })
                 else:
+                    casting.rollback()
+                    casting.dispose()
                     abort(422)
 
 
 @castings_blueprint.route('/castings/<int:casting_id>', methods=['PATCH'])
 @requires_auth(permission='patch:castings')
 def modify(casting_id):
-    success = True
+    success = False
     format_castings = []
     body = request.get_json()
     if body is None:
@@ -99,25 +99,25 @@ def modify(casting_id):
                 try:
                     casting.apply()
                     format_castings = [casting.format()]
-                except:
-                    casting.rollback()
-                    success = False
+                    success = True
                 finally:
-                    casting.dispose()
                     if success:
+                        casting.dispose()
                         return jsonify({
                             'success': success,
                             'modified': casting_id,
                             'castings': format_castings
                         })
                     else:
+                        casting.rollback()
+                        casting.dispose()
                         abort(422)
 
 
 @castings_blueprint.route('/castings/<int:casting_id>', methods=['DELETE'])
 @requires_auth(permission='delete:castings')
 def delete_casting(casting_id):
-    success = True
+    success = False
     casting = Casting.query.filter(Casting.id == casting_id).one_or_none()
     if casting is None:
         abort(400)
@@ -125,16 +125,17 @@ def delete_casting(casting_id):
         try:
             casting.delete()
             casting.apply()
-        except:
-            casting.rollback()
-            success = False
+            success = True
         finally:
             casting.dispose()
             if success:
+                casting.dispose()
                 return jsonify({
                     'success': success,
                     'deleted': casting_id,
                     'castings': []
                 })
             else:
+                casting.rollback()
+                casting.dispose()
                 abort(422)

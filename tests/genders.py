@@ -4,7 +4,8 @@ import json
 from app import APP
 from models import setup_db, Gender
 from flask_sqlalchemy import SQLAlchemy
-from test_utilities import decode_jwt, generate_gender, prepare_genders
+from test_utilities import decode_jwt, generate_gender
+from test_utilities import prepare_genders
 
 
 class TestGenders(unittest.TestCase):
@@ -49,14 +50,16 @@ class TestGenders(unittest.TestCase):
                 permission = 'get:genders'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('genders', data.keys())
                     self.assertEqual(data['success'], True)
                     self.assertGreaterEqual(len(data['genders']), 1)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('genders', data.keys())
                     self.assertEqual(data['success'], False)
@@ -65,7 +68,9 @@ class TestGenders(unittest.TestCase):
         gender = Gender.query.filter(Gender.id == self.seed_id).one_or_none()
         token = self.token
         response = self.client().get(
-            f'/genders/{self.seed_id}', headers={"Authorization": f"Bearer {token}"})
+            f'/genders/{self.seed_id}',
+            headers={
+                "Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -87,14 +92,16 @@ class TestGenders(unittest.TestCase):
                     permission = 'get:genders'
                     if permission in permissions:
                         print(
-                            f'\n has {permission}, return code: {response.status_code}')
+                            f'\n has {permission},',
+                            f'return code: {response.status_code}')
                         self.assertEqual(response.status_code, 200)
                         self.assertIn('genders', data.keys())
                         self.assertEqual(data['success'], True)
                         self.assertEqual(len(data['genders']), 1)
                     else:
                         print(
-                            f'\n no {permission}, return code: {response.status_code}')
+                            f'\n no {permission},',
+                            f'return code: {response.status_code}')
                         self.assertEqual(response.status_code, 401)
                         self.assertNotIn('genders', data.keys())
                         self.assertEqual(data['success'], False)
@@ -103,7 +110,10 @@ class TestGenders(unittest.TestCase):
         token = self.token
         gender = self.post_gender
         response = self.client().post(
-            '/genders', headers={"Authorization": f"Bearer {token}"}, json=gender)
+            '/genders',
+            headers={
+                "Authorization": f"Bearer {token}"},
+            json=gender)
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -120,13 +130,15 @@ class TestGenders(unittest.TestCase):
                 permission = 'post:genders'
                 if 'post:genders' in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('genders', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('genders', data.keys())
                     self.assertEqual(data['success'], False)
@@ -136,7 +148,10 @@ class TestGenders(unittest.TestCase):
         gender = generate_gender()
         gender.name = "F"
         response = self.client().patch(
-            f'/genders/{gender.id}', headers={"Authorization": f"Bearer {token}"}, json=gender.format())
+            f'/genders/{gender.id}',
+            headers={
+                "Authorization": f"Bearer {token}"},
+            json=gender.format())
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -153,13 +168,15 @@ class TestGenders(unittest.TestCase):
                 permission = 'patch:genders'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('genders', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('genders', data.keys())
                     self.assertEqual(data['success'], False)
@@ -168,7 +185,9 @@ class TestGenders(unittest.TestCase):
         token = self.token
         gender = generate_gender()
         response = self.client().delete(
-            f'/genders/{gender.id}', headers={"Authorization": f"Bearer {token}"})
+            f'/genders/{gender.id}',
+            headers={
+                "Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -185,13 +204,15 @@ class TestGenders(unittest.TestCase):
                 permission = 'delete:genders'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('genders', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('genders', data.keys())
                     self.assertEqual(data['success'], False)

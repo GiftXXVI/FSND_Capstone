@@ -34,7 +34,7 @@ def get_movie(movie_id):
 @movies_blueprint.route('/movies', methods=['POST'])
 @requires_auth(permission='post:movies')
 def create_movie():
-    success = True
+    success = False
     body = request.get_json()
     if body is None:
         abort(400)
@@ -51,24 +51,25 @@ def create_movie():
                 movie.apply()
                 movie.refresh()
                 format_movies = [movie.format()]
-            except:
-                movie.rollback()
+                success = True
             finally:
-                movie.dispose()
                 if success:
+                    movie.dispose()
                     return jsonify({
                         'success': success,
                         'created': movie.id,
                         'movies': format_movies
                     })
                 else:
+                    movie.rollback()
+                    movie.dispose()
                     abort(422)
 
 
 @movies_blueprint.route('/movies/<int:movie_id>', methods=['PATCH'])
 @requires_auth(permission='patch:movies')
 def modify_movie(movie_id):
-    success = True
+    success = False
     body = request.get_json()
     if body is None:
         abort(400)
@@ -89,25 +90,25 @@ def modify_movie(movie_id):
                     movie.update()
                     movie.apply()
                     format_movies = [movie.format()]
-                except:
-                    movie.rollback()
-                    success = False
+                    success = True
                 finally:
-                    movie.dispose()
                     if success:
+                        movie.dispose()
                         return jsonify({
                             'success': success,
                             'modified': movie_id,
                             'movies': format_movies
                         })
                     else:
+                        movie.rollback()
+                        movie.dispose()
                         abort(422)
 
 
 @movies_blueprint.route('/movies/<int:movie_id>', methods=['DELETE'])
 @requires_auth(permission='delete:movies')
 def delete_movie(movie_id):
-    success = True
+    success = False
     if movie_id is None:
         abort(400)
     else:
@@ -118,16 +119,16 @@ def delete_movie(movie_id):
             try:
                 movie.delete()
                 movie.apply()
-            except:
-                movie.rollback()
-                success = False
+                success = True
             finally:
-                movie.dispose()
                 if success:
+                    movie.dispose()
                     return jsonify({
                         'success': success,
                         'deleted': movie_id,
                         'movies': []
                     })
                 else:
+                    movie.rollback()
+                    movie.dispose()
                     abort(422)

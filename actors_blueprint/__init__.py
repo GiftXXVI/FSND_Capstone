@@ -34,7 +34,7 @@ def get_actor(actor_id):
 @actors_blueprint.route('/actors', methods=['POST'])
 @requires_auth(permission='post:actors')
 def create_actor():
-    success = True
+    success = False
     body = request.get_json()
     if body is None:
         abort(400)
@@ -52,25 +52,25 @@ def create_actor():
                 actor.apply()
                 actor.refresh()
                 format_actors = [actor.format()]
-            except:
-                actor.rollback()
-                success = False
+                success = True
             finally:
-                actor.dispose()
                 if success:
+                    actor.dispose()
                     return jsonify({
                         "success": success,
                         'created': actor.id,
                         'actors': format_actors
                     })
                 else:
+                    actor.rollback()
+                    actor.dispose()
                     abort(422)
 
 
 @actors_blueprint.route('/actors/<int:actor_id>', methods=['PATCH'])
 @requires_auth(permission='patch:actors')
 def modify_actor(actor_id):
-    success = True
+    success = False
     body = request.get_json()
     if body is None:
         abort(400)
@@ -92,23 +92,25 @@ def modify_actor(actor_id):
                     actor.gender_id = gender_id
                     actor.apply()
                     format_actors = [actor.format()]
-                except:
-                    actor.rollback()
-                    success = False
+                    success = True
                 finally:
-                    actor.dispose()
                     if success:
+                        actor.dispose()
                         return jsonify({
                             "success": success,
                             "modified": actor_id,
                             "actors": format_actors
                         })
+                    else:
+                        actor.rollback()
+                        actor.dispose()
+                        abort(422)
 
 
 @actors_blueprint.route('/actors/<int:actor_id>', methods=['DELETE'])
 @requires_auth(permission='delete:actors')
 def delete_actor(actor_id):
-    success = True
+    success = False
     if actor_id is None:
         abort(400)
     else:
@@ -119,14 +121,16 @@ def delete_actor(actor_id):
             try:
                 actor.delete()
                 actor.apply()
-            except:
-                actor.rollback()
-                success = False
+                success = True
             finally:
-                actor.dispose()
                 if success:
+                    actor.dispose()
                     return jsonify({
                         "success": success,
                         "deleted": actor_id,
                         "actors": []
                     })
+                else:
+                    actor.rollback()
+                    actor.dispose()
+                    abort(422)

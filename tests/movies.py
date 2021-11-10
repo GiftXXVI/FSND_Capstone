@@ -4,7 +4,8 @@ import unittest
 from models import setup_db, Movie
 from app import APP
 from flask_sqlalchemy import SQLAlchemy
-from test_utilities import decode_jwt, generate_movie, prepare_movies
+from test_utilities import decode_jwt, generate_movie
+from test_utilities import prepare_movies
 
 
 class TestMovies(unittest.TestCase):
@@ -50,7 +51,8 @@ class TestMovies(unittest.TestCase):
                 permission = 'get:movies'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     # test response code
                     self.assertEqual(response.status_code, 200)
                     # test response body
@@ -59,7 +61,8 @@ class TestMovies(unittest.TestCase):
                     self.assertGreaterEqual(len(data['movies']), 1)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertEqual(data['success'], False)
                     self.assertNotIn('movies', data.keys())
@@ -68,7 +71,9 @@ class TestMovies(unittest.TestCase):
         movie = Movie.query.filter(Movie.id == self.seed_id).one_or_none()
         token = self.token
         response = self.client().get(
-            f'/movies/{self.seed_id}', headers={"Authorization": f"Bearer {token}"})
+            f'/movies/{self.seed_id}',
+            headers={
+                "Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -90,14 +95,16 @@ class TestMovies(unittest.TestCase):
                     permission = 'get:movies'
                     if permission in permissions:
                         print(
-                            f'\n has {permission}, return code: {response.status_code}')
+                            f'\n has {permission},',
+                            f'return code: {response.status_code}')
                         self.assertEqual(response.status_code, 200)
                         self.assertIn('movies', data.keys())
                         self.assertEqual(data['success'], True)
                         self.assertEqual(len(data['movies']), 1)
                     else:
                         print(
-                            f'\n no {permission}, return code: {response.status_code}')
+                            f'\n no {permission},',
+                            f'return code: {response.status_code}')
                         self.assertEqual(response.status_code, 404)
                         self.assertNotIn('movies', data.keys())
                         self.assertEqual(data['success'], False)
@@ -106,7 +113,10 @@ class TestMovies(unittest.TestCase):
         token = self.token
         movie = self.post_movie
         response = self.client().post(
-            '/movies', headers={"Authorization": f"Bearer {token}"}, json=movie)
+            '/movies',
+            headers={
+                "Authorization": f"Bearer {token}"},
+            json=movie)
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -123,13 +133,15 @@ class TestMovies(unittest.TestCase):
                 permission = 'post:movies'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f' return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('movies', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('movies', data.keys())
                     self.assertEqual(data['success'], False)
@@ -140,7 +152,10 @@ class TestMovies(unittest.TestCase):
         movie.title = 'Terminator 3: Rise of the Machines'
         movie.release_date = '2003-06-30T00:00:00.511Z'
         response = self.client().patch(
-            f'/movies/{movie.id}', headers={"Authorization": f"Bearer {token}"}, json=movie.format())
+            f'/movies/{movie.id}',
+            headers={
+                "Authorization": f"Bearer {token}"},
+            json=movie.format())
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -157,13 +172,15 @@ class TestMovies(unittest.TestCase):
                 permission = 'patch:movies'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('movies', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('movies', data.keys())
                     self.assertEqual(data['success'], False)
@@ -172,7 +189,9 @@ class TestMovies(unittest.TestCase):
         token = self.token
         movie = generate_movie()
         response = self.client().delete(
-            f'/movies/{movie.id}', headers={"Authorization": f"Bearer {token}"})
+            f'/movies/{movie.id}',
+            headers={
+                "Authorization": f"Bearer {token}"})
         data = json.loads(response.data)
         if token is None:
             self.assertEqual(response.status_code, 401)
@@ -189,13 +208,15 @@ class TestMovies(unittest.TestCase):
                 permission = 'delete:movies'
                 if permission in permissions:
                     print(
-                        f'\n has {permission}, return code: {response.status_code}')
+                        f'\n has {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 200)
                     self.assertIn('movies', data.keys())
                     self.assertEqual(data['success'], True)
                 else:
                     print(
-                        f'\n no {permission}, return code: {response.status_code}')
+                        f'\n no {permission},',
+                        f'return code: {response.status_code}')
                     self.assertEqual(response.status_code, 401)
                     self.assertNotIn('movies', data.keys())
                     self.assertEqual(data['success'], False)
