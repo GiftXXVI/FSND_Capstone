@@ -12,4 +12,4 @@ RUN pip install -upgrade pip
 RUN pip uninstall jwt
 RUN pip install -r requirements.txt
 
-ENTRYPOINT['gunicorn','-b','8080','app:APP']
+ENTRYPOINT ["gunicorn","-b","8080","app:APP"]
